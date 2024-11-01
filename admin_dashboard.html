@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASL System</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #f7d9d9, #f0f4f8);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .coz-button {
+            display: block;
+            width: fit-content;
+            margin: 0 auto;
+            padding: 12px 20px;
+            background-color: #ffb3b3;
+            color: white;
+            text-align: center;
+            border-radius: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .coz-button:hover {
+            background-color: #ff8e8e;
+            transform: translateY(-2px);
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 0;
+            border-bottom: 2px solid #d1e7e1;
+            padding-left: 10px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background-color: #f0f4f8;
+            border: 1px solid #d1e7e1;
+            border-bottom: none;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #333;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-right: 5px;
+        }
+
+        .tab.active {
+            background-color: #fff;
+            color: #444;
+            font-weight: bold;
+            border-bottom: 2px solid #fff;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #d1e7e1;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        h2 {
+            color: #444;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1e7e1;
+            border-radius: 8px;
+            background-color: #fefcf9;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .form-group button {
+            padding: 10px 15px;
+            background-color: #ffb3b3;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .form-group button:hover {
+            background-color: #ff8e8e;
+            transform: translateY(-2px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #d1e7e1;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        /* Enhanced Receipt Styles */
+        #receipt {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            line-height: 1.5;
+            padding: 20px;
+            border: 1px solid #333;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #receipt h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        #receipt p {
+            margin: 10px 0;
+        }
+
+        #receipt .receipt-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #receipt .receipt-footer {
+            font-size: 1.1rem;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .black-bar {
+            background-color: #333;
+            height: 2px;
+            margin: 10px 0;
+        }
+
+        /* Logout button styles */
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #ffb3b3;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background-color: #ff8e8e;
+        }
+
+        .archive-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ffb3b3;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .archive-button:hover {
+            background-color: #ff8e8e;
+        }
+
+        .archive-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .archive-content {
+            width: 90%;
+            max-width: 500px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .archive-content h2 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ffb3b3;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            background-color: #ff8e8e;
+        }
+
+        .tab-content {
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .sales-section {
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .sales-header {
+            padding: 10px;
+            background-color: #ffb3b3;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        .sales-header:hover {
+            background-color: #ff8e8e;
+        }
+
+        .sales-details {
+            padding: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <button class="logout-button" onclick="location.href='index.html'">Logout</button>
+        <h1>ASL System</h1>
+
+        <!-- COZ.PH Button -->
+        <a href="https://www.instagram.com/coz.ph?igshid=MTc2emo4ZWdtczluYg==" target="_blank" class="coz-button">COZ.PH</a>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('restocking')">Restocking</button>
+            <button class="tab " onclick="showTab('shelving')">Shelving</button>
+            <button class="tab" onclick="showTab('selling')">Selling</button>
+            <button class="tab" onclick="showTab('dailySales')"> Daily Sales</button>
+            <button class="tab" onclick="showTab('monthlyPerformance')">Monthly Performance</button>
+        </div>
+
+        <!-- Restocking Tab Content -->
+        <div id="restocking" class="tab-content active">
+            <h2>Restocking Yarn</h2>
+            <div class="form-group">
+                <label for="yarnName">Yarn Name:</label>
+                <input type="text" id="yarnName" placeholder="Enter yarn name ">
+            </div>
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" placeholder="Enter quantity">
+            </div>
+            <div class="form-group">
+                <label for="date">Date of Purchase:</label>
+                <input type="date" id="date">
+            </div>
+            <div class="form-group">
+                <button onclick="addRestocking()">Add Restocking</button>
+            </div>
+            <table id="restockingTable">
+                <thead>
+                    <tr>
+                        <th>Yarn Name</th>
+                        <th>Quantity</th>
+                        <th>Date of Purchase</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Shelving Tab Content -->
+        <div id="shelving" class="tab-content">
+            <h2>Shelving Products</h2>
+            <div class="form-group">
+                <label for="productName">Product Name:</label>
+                <input type="text" id="productName" placeholder="Enter product name">
+            </div>
+            <div class="form-group">
+                <label for="productPrice">Price:</label>
+                <input type="number" id="productPrice" placeholder="Enter product price">
+            </div>
+            <div class="form-group">
+                <label for="productQuantity">Quantity:</label>
+                <input type="number" id="productQuantity" placeholder="Enter product quantity">
+            </div>
+            <div class="form-group">
+                <button onclick="addShelving()">Add Product</button>
+            </div>
+            <table id="shelvingTable">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Selling Tab Content -->
+        <div id="selling" class="tab-content">
+            <h2>Selling Products</h2>
+            <div class="form-group">
+                <label for="customerName">Customer Name:</label>
+                <input type="text" id="customerName" placeholder="Enter customer name">
+            </div>
+            <table id="productSelectionTable">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody id="productSelectionTableBody"></tbody>
+            </table>
+            <div class="form-group">
+                <button onclick="recordSale()">Record Sale</button>
+            </div>
+            <div id="receipt"></div>
+        </div>
+
+        <!-- Daily Sales Tab Content -->
+        <div id="dailySales" class="tab-content">
+            <h2>Daily Sales</h2>
+            <div id="dailySalesContainer"></div>
+            <button onclick="archiveDailySales()">Archive Daily Sales</button>
+        </div>
+
+        <!-- Monthly Performance Tab Content -->
+        <div id="monthlyPerformance" class="tab-content">
+            <h2>Monthly Performance</h2>
+            <canvas id="monthlyPerformanceChart" width="400" height="200"></canvas>
+        </div>
+
+        <!-- Archive Modal Popup -->
+        <div id="archiveModal" class="archive-modal">
+            <div class="archive-content">
+                <span class="close-button" onclick="toggleArchive()">Close</span>
+                <h2>Archived Items</h2>
+                <table id="archiveTable">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Archive Button -->
+        <button class="archive-button" onclick="toggleArchive()">Archive</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Variables for storing data
+        let restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
+        let shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
+        let sellingData = JSON.parse(localStorage.getItem('sellingData')) || [];
+        let archivedData = JSON.parse(localStorage.getItem('archivedData')) || [];
+        let salesData = JSON.parse(localStorage.getItem('salesData')) || [];
+
+        // Function to save data to local storage
+        function saveData() {
+            localStorage.setItem('restockingData', JSON.stringify(restockingData));
+            localStorage.setItem('shelvingData', JSON.stringify(shelvingData));
+            localStorage.setItem('sellingData', JSON.stringify(sellingData));
+            localStorage.setItem('archivedData', JSON.stringify(archivedData));
+            localStorage.setItem('salesData', JSON.stringify(salesData));
+        }
+
+        // Function to show and hide tabs
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
+        // Toggle sales details function
+        function toggleSalesDetails(section) {
+            const details = section.querySelector('.sales-details');
+            details.style.display = details.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function loadData() {
+            restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
+            shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
+            sellingData = JSON.parse(localStorage.getItem('sellingData')) || [];
+            archivedData = JSON.parse(localStorage.getItem('archivedData')) || [];
+            salesData = JSON.parse(localStorage.getItem('salesData')) || [];
+
+            // Update UI with loaded data
+            updateRestockingTable();
+            updateShelvingTable();
+            updateProductSelectionTable();
+            loadSalesData();
+            updateMonthlyPerformanceChart();
+        }
+
+        // Update product selection table
+        function updateProductSelectionTable() {
+            const tableBody = document.getElementById('productSelectionTableBody');
+            tableBody.innerHTML = '';
+            shelvingData.forEach(product => {
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${product.productName}</td>
+                        <td><input type="number" value="0" data-product-name="${product.productName}"></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Update UI with loaded data updateRestockingTable();
+        updateShelvingTable();
+        updateProductSelectionTable();
+        loadSalesData();
+
+        // Archive toggle function
+        function toggleArchive() {
+            const modal = document.getElementById('archiveModal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // Add restocking data
+        function addRestocking() {
+            const yarnName = document.getElementById('yarnName').value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const date = document.getElementById('date').value;
+
+            if (yarnName && quantity > 0 && date) {
+                restockingData.push({ yarnName, quantity, date });
+                updateRestockingTable();
+                clearRestockingFields();
+                saveData();
+            } else {
+                alert('Please fill out all fields.');
+            }
+        }
+
+        // Add shelving data
+        function addShelving() {
+            const productName = document.getElementById('productName').value;
+            const productPrice = parseFloat(document.getElementById('productPrice').value);
+            const productQuantity = parseInt(document.getElementById('productQuantity').value);
+
+            if (productName && productPrice > 0 && productQuantity > 0) {
+                shelvingData.push({ productName, productPrice, productQuantity });
+                updateShelvingTable();
+                updateProductSelectionTable();
+                clearShelvingFields();
+                saveData();
+            } else {
+                alert('Please fill out all fields.');
+            }
+        }
+
+        function recordSale() {
+            const customerName = document.getElementById('customerName').value;
+            const productQuantities = {};
+            const productQuantityInputs = document.querySelectorAll('#productSelectionTableBody input[type="number"]');
+            productQuantityInputs.forEach(input => {
+                const productName = input.getAttribute('data-product-name');
+                const quantity = parseInt(input.value);
+                if (quantity > 0) {
+                    productQuantities[productName] = quantity;
+                }
+            });
+
+            if (Object.keys(productQuantities).length === 0) {
+                alert('Please select products and enter quantities.');
+                return;
+            }
+
+            const products = shelvingData.filter(p => Object.keys(productQuantities).includes(p.productName));
+            const sales = products.map(product => {
+                const quantity = productQuantities[product.productName];
+                const totalPrice = product.productPrice * quantity;
+                product.productQuantity -= quantity;
+                return { customerName, productName: product.productName, sellQuantity: quantity, totalPrice };
+            });
+
+            sellingData.push(...sales );
+            salesData.push(...sales.map(sale => ({ ...sale, date: new Date().toISOString().split('T')[0] })));
+
+            saveData();
+
+            clearSellingFields();
+
+            const receipt = document.getElementById('receipt');
+            receipt.style.display = 'block';
+            receipt.innerHTML = `
+                <h3>Order Details</h3>
+                <div class="black-bar"></div>
+                <p class="receipt-header">COZ.PH</p>
+                <p>Customer Name: ${customerName}</p>
+                <ul>
+                    ${products.map(product => `<li>${product.productName} x ${productQuantities[product.productName]}</li>`).join('')}
+                </ul>
+                <div class="black-bar"></div>
+                <p>Total Price: ₱${sales.reduce((acc, sale) => acc + sale.totalPrice, 0).toFixed(2)}</p>
+                <div class="black-bar"></div>
+                <p class="receipt-footer">Thank you for shopping at COZ.PH!</p>
+                <p style="text-align: center;">Phone: 056 711 9738</p>
+                <p style="text-align: center;">Email: cozph@gmail.com</p>
+            `;
+        }
+
+        function loadSalesData() {
+            const salesContainer = document.getElementById('dailySalesContainer');
+            salesContainer.innerHTML = '';
+
+            // Group sales data by date
+            const salesByDate = salesData.reduce((acc, sale) => {
+                const date = sale.date;
+                if (!acc[date]) {
+                    acc[date] = [];
+                }
+                acc[date].push(sale);
+                return acc;
+            }, {});
+
+            // Create collapsible sections for each date
+            for (const date in salesByDate) {
+                const sales = salesByDate[date];
+                const section = document.createElement('div');
+                section.classList.add('sales-section');
+
+                const header = document.createElement('div');
+                header.classList.add('sales-header');
+                header.innerText = date;
+                header.onclick = () => toggleSalesDetails(section);
+                section.appendChild(header);
+
+                const details = document.createElement('div');
+                details.classList.add('sales-details');
+                details.style.display = 'none';
+
+                const table = document.createElement('table');
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${sales.map(sale => `
+                            <tr>
+                                <td>${sale.customerName}</td>
+                                <td>${sale.productName}</td>
+                                <td>${sale.sellQuantity}</td>
+                                <td>₱${(sale.totalPrice || 0).toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                `;
+                details.appendChild(table);
+                section.appendChild(details);
+                salesContainer.appendChild(section);
+            }
+        }
+
+        // Archive daily sales function
+        function archiveDailySales() {
+            if (salesData.length === 0) {
+                alert("No sales data to archive.");
+                return;
+            }
+
+            // Move sales data to archived data
+            archivedData.push(...salesData);
+            salesData = [];
+            saveData();
+            loadSalesData();
+            updateArchiveTable();
+            alert("Daily sales archived successfully.");
+        }
+
+        // Update restocking table
+        function updateRestockingTable() {
+            const table = document.getElementById('restockingTable').querySelector('tbody');
+            table.innerHTML = '';
+            restockingData.forEach((item, index) => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${item.yarnName}</td>
+                        <td>${item.quantity}</td>
+                        <td>${item.date}</td>
+                        <td><button onclick="archiveItem('restocking', ${index})">Archive</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Update shelving table
+        function updateShelvingTable() {
+            const shelvingTable = document.getElementById('shelvingTable').querySelector('tbody ');
+            shelvingTable.innerHTML = '';
+
+            shelvingData.forEach((product, index) => {
+                shelvingTable.innerHTML += `
+                    <tr>
+                        <td>${product.productName}</td>
+                        <td> ₱${product.productPrice.toFixed(2)}</td>
+                        <td>${product.productQuantity}</td>
+                        <td><button onclick="archiveItem('shelving', ${index})">Archive</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Update selling table
+        function updateSellingTable() {
+            const sellingTableBody = document.getElementById('selling-table-body');
+            sellingTableBody.innerHTML = '';
+            sellingData.forEach(sale => {
+                sellingTableBody.innerHTML += `
+                    <tr>
+                        <td>${sale.customerName}</td>
+                        <td>${sale.productName}</td>
+                        <td >${sale.sellQuantity}</td >
+                        <td>₱${sale.totalPrice.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Archive item
+        function archiveItem(type, index) {
+            let item ;
+            if (type === 'restocking') {
+                item = restockingData.splice(index, 1)[0];
+            } else if (type === 'shelving') {
+                item = shelvingData.splice(index, 1)[0];
+            }
+            archivedData.push({ type, ...item });
+            updateRestockingTable();
+            updateShelvingTable();
+            updateArchiveTable();
+        }
+
+        // Update archive table
+        function updateArchiveTable() {
+            const table = document.getElementById('archiveTable').querySelector('tbody');
+            table.innerHTML = '';
+            archivedData.forEach(item => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${item.type}</td>
+                        <td>${item.yarnName || item.productName}</td>
+                        <td>${item.quantity || item.productQuantity}</td>
+                        <td>${item.date || ''}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Clear input fields
+        function clearRestockingFields() {
+            document.getElementById('yarnName').value = '';
+            document.getElementById('quantity').value = '';
+            document.getElementById('date').value = '';
+        }
+
+        function clearShelvingFields() {
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productQuantity').value = '';
+        }
+
+        function clearSellingFields() {
+            document.getElementById('customerName').value = '';
+        }
+
+        // Call load data function on page load
+        window.onload = function() {
+            loadData();
+        }
+
+        // Update monthly performance chart
+        function updateMonthlyPerformanceChart() {
+            const ctx = document.getElementById('monthlyPerformanceChart').getContext('2d');
+            const monthlySales = new Array(12).fill(0);
+
+            // Calculate monthly sales
+            salesData.forEach(sale => {
+                const date = new Date(sale.date);
+                const month = date.getMonth();
+                monthlySales[month] += sale.totalPrice;
+            });
+
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                    datasets: [{
+                        label: 'Monthly Sales',
+                        data: monthlySales,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)',
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Update chart data
+            chart.data.datasets[0].data = monthlySales;
+            chart.update();
+        }
+
+        // Call update monthly performance chart function on page load
+        window.onload = function() {
+            updateMonthlyPerformanceChart();
+        }
+    </script>
+</body>
+</html>

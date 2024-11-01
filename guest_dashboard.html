@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASL System - Tables Only</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #f7d9d9, #f0f4f8);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 0;
+            border-bottom: 2px solid #d1e7e1;
+            padding-left: 10px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background-color: #f0f4f8;
+            border: 1px solid #d1e7e1;
+            border-bottom: none;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #333;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-right: 5px;
+        }
+
+        .tab.active {
+            background-color: #fff;
+            color: #444;
+            font-weight: bold;
+            border-bottom: 2px solid #fff;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #d1e7e1;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        h2 {
+            color: #444;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #d1e7e1;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        .sales-section {
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .sales-header {
+            padding: 10px;
+            background-color: #ffb3b3;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        .sales-header:hover {
+            background-color: #ff8e8e;
+        }
+
+        .sales-details {
+            padding: 10px;
+            display: none;
+        }
+
+        /* Logout button styles */
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #ffb3b3;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background-color: #ff8e8e;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <button class="logout-button" onclick="location.href='index.html'">Logout</button>
+        <h1>ASL System</h1>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('restocking')">Restocking</button>
+            <button class="tab" onclick="showTab('shelving')">Shelving</button>
+            <button class="tab " onclick="showTab('dailySales')">Daily Sales</button>
+            <button class="tab" onclick="showTab('monthlyPerformance')">Monthly Performance</button>
+        </div>
+
+        <!-- Restocking Tab Content -->
+        <div id="restocking" class="tab-content active">
+            <h2>Restocking Yarn</h2>
+            <table id="restockingTable">
+                <thead>
+                    <tr>
+                        <th>Yarn Name</th>
+                        <th>Quantity</th>
+                        <th>Date of Purchase</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Shelving Tab Content -->
+        <div id="shelving" class="tab-content">
+            <h2>Shelving Products</h2>
+            <table id="shelvingTable">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+     <!-- Daily Sales Tab Content -->
+     <div id="dailySales" class="tab-content">
+        <h2>Daily Sales</h2>
+        <div id="dailySalesContainer"></div>
+    </div>
+
+        <!-- Monthly Performance Tab Content -->
+        <div id="monthlyPerformance" class="tab-content">
+            <h2>Monthly Performance</h2>
+            <canvas id="monthlyPerformanceChart" width="400" height="200"></canvas>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            // Variables for storing data
+            let restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
+            let shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
+            let salesData = JSON.parse(localStorage.getItem('salesData')) || [];
+
+            // Function to save data to local storage
+            function saveData() {
+                localStorage.setItem('restockingData', JSON.stringify(restockingData));
+                localStorage.setItem('shelvingData', JSON.stringify(shelvingData));
+                localStorage.setItem('salesData', JSON.stringify(salesData));
+            }
+
+            // Function to show and hide tabs
+            function showTab(tabId) {
+                const tabs = document.querySelectorAll('.tab-content');
+                tabs.forEach(tab => tab.classList.remove('active'));
+
+                document.getElementById(tabId).classList.add('active');
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+            }
+
+            // Toggle sales details function
+            function toggleSalesDetails(section) {
+                const details = section.querySelector('.sales-details');
+                details.style.display = details.style.display === 'none' ? 'block' : 'none';
+            }
+
+            function loadData() {
+                restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
+                shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
+                salesData = JSON.parse(localStorage.getItem('salesData')) || [];
+
+                // Update UI with loaded data
+                updateRestockingTable();
+                updateShelvingTable();
+                loadSalesData();
+                updateMonthlyPerformanceChart();
+            }
+
+            // Update restocking table
+            function updateRestockingTable() {
+                const table = document.getElementById('restockingTable').querySelector('tbody');
+                table.innerHTML = '';
+                restockingData.forEach((item, index) => {
+                    table.innerHTML += `
+                        <tr>
+                            <td>${item.yarnName}</td>
+                            <td>${item.quantity}</td>
+                            <td>${item.date}</td>
+                            <td></td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // Update shelving table
+            function updateShelvingTable() {
+                const shelvingTable = document.getElementById('shelvingTable').querySelector('tbody');
+                shelvingTable.innerHTML = '';
+
+                shelvingData.forEach((product, index) => {
+                    shelvingTable.innerHTML += `
+                        <tr>
+                            <td>${product.productName}</td>
+                            <td> ₱${product.productPrice.toFixed(2)}</td>
+                            <td>${product.productQuantity}</td>
+                            <td></td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // Load sales data
+            function loadSalesData() {
+                const salesContainer = document.getElementById('dailySalesContainer');
+                salesContainer.innerHTML = '';
+
+                // Group sales data by date
+                const salesByDate = salesData.reduce((acc, sale) => {
+                    const date = sale.date;
+                    if (!acc[date]) {
+                        acc[date] = [];
+                    }
+                    acc[date].push(sale);
+                    return acc;
+                }, {});
+
+                // Create collapsible sections for each date
+                for (const date in salesByDate) {
+                    const sales = salesByDate[date];
+                    const section = document.createElement('div');
+                    section.classList.add('sales-section');
+
+                    const header = document.createElement('div');
+                    header.classList.add('sales-header');
+                    header.innerText = date;
+                    header.onclick = () => toggleSalesDetails(section);
+                    section.appendChild(header);
+
+                    const details = document.createElement('div');
+                    details.classList.add('sales-details');
+                    details.style.display = 'none';
+
+                    const table = document.createElement('table');
+                    table.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>Customer Name </th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${sales.map(sale => `
+                                <tr>
+                                    <td>${sale.customerName}</td>
+                                    <td>${sale.productName}</td>
+                                    <td>${sale.sellQuantity}</td>
+                                    <td> ₱${(sale.totalPrice || 0).toFixed(2)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    `;
+                    details.appendChild(table);
+                    section.appendChild(details);
+                    salesContainer.appendChild(section);
+                }
+            }
+
+            // Update monthly performance chart
+            function updateMonthlyPerformanceChart() {
+                const ctx = document.getElementById('monthlyPerformanceChart').getContext('2d');
+                const monthlySales = new Array(12).fill(0);
+
+                // Calculate monthly sales
+                salesData.forEach(sale => {
+                    const month = new Date(sale.date).getMonth();
+                    monthlySales[month] += sale.totalPrice;
+                });
+
+                // Create chart
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                        datasets: [{
+                            label: 'Monthly Sales',
+                            data: monthlySales,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Load data on page load
+            loadData();
+        </script>
+    </div>
+</body>
+</html>
