@@ -151,7 +151,7 @@
         }
 
         th {
-            background-color: #f0f4f8;
+            background-color: #f0f 4f8;
             color: #333;
         }
 
@@ -312,7 +312,7 @@
             <button class="tab active" onclick="showTab('restocking')">Restocking</button>
             <button class="tab " onclick="showTab('shelving')">Shelving</button>
             <button class="tab" onclick="showTab('selling')">Selling</button>
-            <button class="tab" onclick="showTab('dailySales')"> Daily Sales</button>
+            <button class="tab" onclick="showTab('dailySales')"> Daily Sales</ button>
             <button class="tab" onclick="showTab('monthlyPerformance')">Monthly Performance</button>
         </div>
 
@@ -455,37 +455,32 @@
         }
 
         function showTab(tabId) {
-    const tabs = document.querySelectorAll('.tab-content');
-    tabs.forEach(tab => tab.classList.remove('active'));
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
 
-    document.getElementById(tabId).classList.add('active');
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
 
-    if (tabId === 'restocking') {
-        updateRestockingTable();
-    }
-}
-        // Toggle sales details function
-        function toggleSalesDetails(section) {
-            const details = section.querySelector('.sales-details');
-            details.style.display = details.style.display === 'none' ? 'block' : 'none';
+            if (tabId === 'restocking') {
+                updateRestockingTable();
+            }
         }
 
         function loadData() {
-    restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
-    shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
-    sellingData = JSON.parse(localStorage.getItem('sellingData')) || [];
-    archivedData = JSON.parse(localStorage.getItem('archivedData')) || [];
-    salesData = JSON.parse(localStorage.getItem('salesData')) || [];
+            restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
+            shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
+            sellingData = JSON.parse(localStorage.getItem('sellingData')) || [];
+            archivedData = JSON.parse(localStorage.getItem('archivedData')) || [];
+            salesData = JSON.parse(localStorage.getItem('salesData')) || [];
 
-    // Update UI with loaded data
-    updateRestockingTable();
-    updateShelvingTable();
-    updateProductSelectionTable();
-    loadSalesData();
-    updateMonthlyPerformanceChart();
-}
+            // Update UI with loaded data
+            updateRestockingTable();
+            updateShelvingTable();
+            updateProductSelectionTable();
+            loadSalesData();
+            updateMonthlyPerformanceChart();
+        }
 
         // Update product selection table
         function updateProductSelectionTable() {
@@ -577,7 +572,7 @@
 
             clearSellingFields();
 
-            const receipt = document.getElementById('receipt');
+ const receipt = document.getElementById('receipt');
             receipt.style.display = 'block';
             receipt.innerHTML = `
                 <h3>Order Details</h3>
@@ -712,7 +707,7 @@
                         <td>${sale.customerName}</td>
                         <td>${sale.productName}</td>
                         <td >${sale.sellQuantity}</td >
-                        <td>₱${sale.totalPrice.toFixed(2)}</td>
+                        <td>₱${sale.totalPrice.toFixed(2)}</td >
                     </tr>
                 `;
             });
@@ -767,9 +762,10 @@
 
         // Call load data function on page load
         window.onload = function() {
-    loadData();
-    showTab('restocking');
-}
+            loadData();
+            showTab('restocking'); // Ensure the restocking tab is shown on load
+            updateMonthlyPerformanceChart(); // Call this function as well
+        }
 
         // Update monthly performance chart
         function updateMonthlyPerformanceChart() {
@@ -833,11 +829,6 @@
             // Update chart data
             chart.data.datasets[0].data = monthlySales;
             chart.update();
-        }
-
-        // Call update monthly performance chart function on page load
-        window.onload = function() {
-            updateMonthlyPerformanceChart();
         }
     </script>
 </body>
