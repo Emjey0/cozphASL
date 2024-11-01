@@ -471,19 +471,19 @@
         }
 
         function loadData() {
-            restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
-            shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
-            sellingData = JSON.parse(localStorage.getItem('sellingData')) || [];
-            archivedData = JSON.parse(localStorage.getItem('archivedData')) || [];
-            salesData = JSON.parse(localStorage.getItem('salesData')) || [];
+    restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
+    shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
+    sellingData = JSON.parse(localStorage.getItem('sellingData')) || [];
+    archivedData = JSON.parse(localStorage.getItem('archivedData')) || [];
+    salesData = JSON.parse(localStorage.getItem('salesData')) || [];
 
-            // Update UI with loaded data
-            updateRestockingTable();
-            updateShelvingTable();
-            updateProductSelectionTable();
-            loadSalesData();
-            updateMonthlyPerformanceChart();
-        }
+    // Update UI with loaded data
+    updateRestockingTable();
+    updateShelvingTable();
+    updateProductSelectionTable();
+    loadSalesData();
+    updateMonthlyPerformanceChart();
+}
 
         // Update product selection table
         function updateProductSelectionTable() {
