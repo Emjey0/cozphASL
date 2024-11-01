@@ -454,16 +454,18 @@
             localStorage.setItem('salesData', JSON.stringify(salesData));
         }
 
-        // Function to show and hide tabs
         function showTab(tabId) {
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => tab.classList.remove('active'));
+    const tabs = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => tab.classList.remove('active'));
 
-            document.getElementById(tabId).classList.add('active');
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
-        }
+    document.getElementById(tabId).classList.add('active');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
 
+    if (tabId === 'restocking') {
+        updateRestockingTable();
+    }
+}
         // Toggle sales details function
         function toggleSalesDetails(section) {
             const details = section.querySelector('.sales-details');
@@ -765,8 +767,9 @@
 
         // Call load data function on page load
         window.onload = function() {
-            loadData();
-        }
+    loadData();
+    showTab('restocking');
+}
 
         // Update monthly performance chart
         function updateMonthlyPerformanceChart() {
