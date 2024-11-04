@@ -151,7 +151,7 @@
         }
 
         th {
-            background-color: #f0f 4f8;
+            background-color: #f0f4f8;
             color: #333;
         }
 
@@ -312,7 +312,7 @@
             <button class="tab active" onclick="showTab('restocking')">Restocking</button>
             <button class="tab " onclick="showTab('shelving')">Shelving</button>
             <button class="tab" onclick="showTab('selling')">Selling</button>
-            <button class="tab" onclick="showTab('dailySales')"> Daily Sales</ button>
+            <button class="tab" onclick="showTab('dailySales')">Daily Sales</button>
             <button class="tab" onclick="showTab('monthlyPerformance')">Monthly Performance</button>
         </div>
 
@@ -464,6 +464,8 @@
 
             if (tabId === 'restocking') {
                 updateRestockingTable();
+            } else if (tabId === 'dailySales') {
+                loadSalesData();
             }
         }
 
@@ -566,13 +568,13 @@
             });
 
             sellingData.push(...sales );
-            salesData.push(...sales.map(sale => ({ ...sale, date: new Date().toISOString().split('T')[0] })));
+            salesData.push(... sales.map(sale => ({ ...sale, date: new Date().toISOString().split('T')[0] })));
 
             saveData();
 
             clearSellingFields();
 
- const receipt = document.getElementById('receipt');
+            const receipt = document.getElementById('receipt');
             receipt.style.display = 'block';
             receipt.innerHTML = `
                 <h3>Order Details</h3>
@@ -706,8 +708,8 @@
                     <tr>
                         <td>${sale.customerName}</td>
                         <td>${sale.productName}</td>
-                        <td >${sale.sellQuantity}</td >
-                        <td>₱${sale.totalPrice.toFixed(2)}</td >
+                        <td>${sale.sellQuantity}</td>
+                        <td>₱${sale.totalPrice.toFixed(2)}</td>
                     </tr>
                 `;
             });
@@ -760,6 +762,12 @@
             document.getElementById('customerName').value = '';
         }
 
+        // Toggle sales details visibility
+        function toggleSalesDetails(section) {
+            const details = section.querySelector('.sales-details');
+            details.style.display = details.style.display === 'none' ? 'block' : 'none';
+        }
+
         // Call load data function on page load
         window.onload = function() {
             loadData();
@@ -795,7 +803,7 @@
                             'rgba(255, 159, 64, 0.2)',
                             'rgba(255, 99, 132, 0.2)',
                             'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(255, 206, 86, 0. 2)',
                             'rgba(75, 192, 192, 0.2)',
                             'rgba(153, 102, 255, 0.2)',
                             'rgba(255, 159, 64, 0.2)'
