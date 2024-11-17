@@ -549,19 +549,19 @@
 
             // Update restocking table
             function updateRestockingTable() {
-                const table = document.getElementById('restockingTable').querySelector('tbody');
-                table.innerHTML = '';
-                restockingData.forEach((item, index) => {
-                    table.innerHTML += `
-                        <tr>
-                            <td>${item.yarnName}</td>
-                            <td>${item.quantity}</td>
-                            <td>${item.date}</td>
-                            <td><button onclick="removeItem('restocking', ${index})">Remove</button></td>
-                        </tr>
-                    `;
-                });
-            }
+    const table = document.getElementById('restockingTable').querySelector('tbody');
+    table.innerHTML = '';
+    restockingData.forEach(item => {
+        table.innerHTML += `
+            <tr>
+                <td>${item.yarnName}</td>
+                <td>${item.quantity}</td>
+                <td>${item.date}</td>
+                <td></td> <!-- Removed the button -->
+            </tr>
+        `;
+    });
+}
 
             // Update shelving table
             function updateShelvingTable() {
