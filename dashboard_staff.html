@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASL System</title>
+    <title>ASL System - Staff Account</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -15,6 +15,30 @@
             align-items: center;
             height: 100vh;
             background: linear-gradient(to right, #f7d9d9, #f0f4f8);
+        }
+
+        .button-container {
+            position: fixed;
+            top: 80px; /* Adjusted position to lower the buttons */
+            left: 10px;
+            display: flex;
+            flex-direction: column; /* Align buttons vertically */
+            gap: 10px; /* Space between buttons */
+        }
+
+        .logout-button, .archive-button {
+            background-color: #ffb3b3;
+            color: white;
+            padding: 15px; /* Increased padding for a longer button */
+            border-radius: 10px;
+            cursor: pointer;
+            width: 120px; /* Fixed width for both buttons */
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-button:hover, .archive-button:hover {
+            background-color: #ff8e8e;
         }
 
         .container {
@@ -32,13 +56,13 @@
             text-align: center;
             color: #444;
             font-size: 2.5rem;
-            margin-bottom: 20px;
+            margin-bottom: 10px; /* Adjusted margin */
         }
 
         .coz-button {
             display: block;
             width: fit-content;
-            margin: 0 auto;
+            margin: 10px auto; /* Adjusted margin to be closer to the title */
             padding: 12px 20px;
             background-color: #ffb3b3;
             color: white;
@@ -151,7 +175,7 @@
         }
 
         th {
-            background-color: #f0f 4f8;
+            background-color: #f0f4f8;
             color: #333;
         }
 
@@ -192,19 +216,18 @@
             margin: 10px 0;
         }
 
-        /* Logout button styles */
-        .logout-button {
+        .close-button {
             position: absolute;
             top: 10px;
-            left: 10px;
+            right: 10px;
             background-color: #ffb3b3;
             color: white;
-            padding: 10px;
-            border-radius: 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
             cursor: pointer;
         }
 
-        .logout-button:hover {
+        .close-button:hover {
             background-color: #ff8e8e;
         }
 
@@ -240,15 +263,33 @@
             padding: 10px;
             display: none;
         }
+
+        .quantity-button {
+            padding: 3px 5px; /* Further reduced padding */
+            font-size: 0.7rem; /* Smaller font size */
+            border-radius: 5px; /* Rounded corners */
+            background-color: #ffb3b3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .quantity-button:hover {
+            background-color: #ff8e8e;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="button-container">
         <button class="logout-button" onclick="location.href='index.html'">Logout</button>
-        <h1>ASL System</h1>
+    </div>
 
-        <!-- COZ.PH Button -->
+    <div class="container">
+        <h1>ASL System - Staff Account</h1>
+
+        <!-- CO Z.PH Button -->
         <a href="https://www.instagram.com/coz.ph?igshid=MTc2emo4ZWdtczluYg==" target="_blank" class="coz-button">COZ.PH</a>
 
         <!-- Tabs -->
@@ -257,7 +298,8 @@
             <button class="tab" onclick="showTab('shelving')">Shelving</button>
             <button class="tab" onclick="showTab('selling')">Selling</button>
             <button class="tab" onclick="showTab('dailySales')">Daily Sales</button>
-            <button class="tab" onclick="showTab('monthlyPerformance')">Monthly Performance</button>
+            <button class="tab" onclick="showTab('monthlySales')">Monthly Sales</button>
+            
         </div>
 
         <!-- Restocking Tab Content -->
@@ -265,25 +307,29 @@
             <h2>Restocking Yarn</h2>
             <div class="form-group">
                 <label for="yarnName">Yarn Name:</label>
-                <input type="text" id="yarnName" placeholder="Enter yarn name">
+                <input type="text" id="yarnName" placeholder="Enter yarn name ">
             </div>
             <div class="form-group">
                 <label for="quantity">Quantity:</label>
                 <input type="number" id="quantity" placeholder="Enter quantity">
             </div>
             <div class="form-group">
-                <label for="date">Date of Purchase:</label>
-                <input type="date" id="date">
+                <label for="date">Date:</label>
+                <input type="date" id="date" readonly />
             </div>
             <div class="form-group">
                 <button onclick="addRestocking()">Add Restocking</button>
+            </div>
+            <div class="form-group">
+                <label for="restockingSearch">Search Yarn Name:</label>
+                <input type="text" id="restockingSearch" onkeyup="filterRestocking()" placeholder="Search for yarn name...">
             </div>
             <table id="restockingTable">
                 <thead>
                     <tr>
                         <th>Yarn Name</th>
                         <th>Quantity</th>
-                        <th>Date of Purchase</th>
+                        <th>Date Updated</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -294,6 +340,12 @@
         <!-- Shelving Tab Content -->
         <div id="shelving" class="tab-content">
             <h2>Shelving Products</h2>
+            <div class="form-group">
+            </div>
+            <div class="form-group">
+                <label for="shelvingSearch">Search Products:</label>
+                <input type="text" id="shelvingSearch" onkeyup="filterShelving()" placeholder="Search for products...">
+            </div>
             <table id="shelvingTable">
                 <thead>
                     <tr>
@@ -330,353 +382,710 @@
         </div>
 
         <!-- Daily Sales Tab Content -->
-        <div id="dailySales" class="tab-content">
-            <h2>Daily Sales</h2>
-            <div id="dailySalesContainer"></div>
-        </div>
+<div id="dailySales" class="tab-content">
+    <h2>Daily Sales</h2>
+    <div id="dailySalesContainer"></div>
+</div>
 
-        <!-- Monthly Performance Tab Content -->
-        <div id="monthlyPerformance" class="tab-content">
-            <h2>Monthly Performance</h2>
-            <canvas id="monthlyPerformanceChart" width="400" height="200"></canvas>
-        </div>
+        <!-- Monthly Sales Tab Content -->
+<div id="monthlySales" class="tab-content">
+    <h2>Monthly Sales</h2>
+    
+    <!-- Year Selector Dropdown -->
+    <label for="yearSelector">Select Year:</label>
+    <select id="yearSelector" onchange="updateMonthlySalesChart()">
+        <!-- Years will be populated dynamically -->
+    </select>
+    
+    <button onclick="printMonthlySales()">Print Monthly Sales</button>
+    <canvas id="monthlySalesChart" width="400" height="200"></canvas>
+</div>
+  
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Variables for storing data
+        let restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
+        let shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
+        let sellingData = JSON.parse(localStorage.getItem('sellingData')) || [];
+        let archivedData = JSON.parse(localStorage.getItem('archivedData')) || [];
+        let salesData = JSON.parse(localStorage.getItem('salesData')) || [];
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            // Variables for storing data
-            let restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
-            let shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
-            let sellingData = JSON.parse(localStorage.getItem('sellingData')) || [];
-            let salesData = JSON.parse(localStorage.getItem('salesData')) || [];
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
 
-            // Function to save data to local storage
-            function saveData() {
-                localStorage.setItem('restockingData', JSON.stringify(restockingData));
-                localStorage.setItem('shelvingData', JSON.stringify(shelvingData));
-                localStorage.setItem('sellingData', JSON.stringify(sellingData));
-                localStorage.setItem('salesData', JSON.stringify(salesData));
-            }
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
 
-            // Function to show and hide tabs
-            function showTab(tabId) {
-                const tabs = document.querySelectorAll('.tab-content');
-                tabs.forEach(tab => tab.classList.remove('active'));
-
-                document.getElementById(tabId).classList.add('active');
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
-            }
-
-            // Toggle sales details function
-            function toggleSalesDetails(section) {
-                const details = section.querySelector('.sales-details');
-                details.style.display = details.style.display === 'none' ? 'block' : 'none';
-            }
-
-            function loadData() {
-                restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
-                shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
-                sellingData = JSON.parse(localStorage.getItem('sellingData')) || [];
-                salesData = JSON.parse(localStorage.getItem('salesData')) || [];
-
-                // Update UI with loaded data
+            if (tabId === 'selling') {
+                updateProductSelectionTable(); // Ensure product selection table is updated when Selling tab is shown
+            } else if (tabId === 'restocking') {
                 updateRestockingTable();
-                updateShelvingTable();
-                updateProductSelectionTable();
+            } else if (tabId === 'dailySales') {
                 loadSalesData();
-                updateMonthlyPerformanceChart();
             }
+        }
+        function loadData() {
+// Load data from local storage
+restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
+shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
+sellingData = JSON.parse(localStorage.getItem('sellingData')) || [];
+archivedData = JSON.parse(localStorage.getItem('archivedData')) || []; // Load archived data
 
-            // Update product selection table
-            function updateProductSelectionTable() {
-                const tableBody = document.getElementById('productSelectionTableBody');
-                tableBody.innerHTML = '';
-                shelvingData.forEach(product => {
+// Update UI with loaded data
+updateRestockingTable();
+updateShelvingTable();
+updateProductSelectionTable();
+loadSalesData();
+updateMonthlySalesChart(); // Ensure this is called after salesData is loaded
+updateArchiveTable(); // Update the archive table to show the loaded archived items
+}
+
+        function updateProductSelectionTable() {
+            const tableBody = document.getElementById('productSelectionTableBody');
+            tableBody.innerHTML = '';
+            shelvingData.forEach(product => {
+                if (product.productQuantity > 0) {
                     tableBody.innerHTML += `
                         <tr>
                             <td>${product.productName}</td>
-                            <td><input type="number" value="0" data-product-name="${product.productName}"></td>
+                            <td><input type="number" data-product-name="${product.productName}" min="0" max="${product.productQuantity}" value="0"></td>
                         </tr>
                     `;
-                });
-            }
-
-            // Update UI with loaded data updateRestockingTable();
-            updateShelvingTable();
-            updateProductSelectionTable();
-            loadSalesData();
-
-            // Add restocking data
-            function addRestocking() {
-                const yarnName = document.getElementById('yarnName').value;
-                const quantity = parseInt(document.getElementById('quantity').value);
-                const date = document.getElementById('date').value;
-
-                if (yarnName && quantity > 0 && date) {
-                    restockingData.push({ yarnName, quantity, date });
-                    updateRestockingTable();
-                    clearRestockingFields();
-                    saveData();
-                } else {
-                    alert('Please fill out all fields.');
                 }
-            }
+            });
+        }
 
-            // Add shelving data
-            function addShelving() {
-                const productName = document.getElementById('productName').value;
-                const productPrice = parseFloat(document.getElementById('productPrice').value);
-                const productQuantity = parseInt(document.getElementById('productQuantity').value);
-
-                if (productName && productPrice > 0 && productQuantity > 0) {
-                    shelvingData.push({ productName, productPrice, productQuantity });
-                    updateShelvingTable();
-                    updateProductSelectionTable();
-                    clearShelvingFields();
-                    saveData();
-                } else {
-                    alert('Please fill out all fields.');
-                }
-            }
-
-            function recordSale() {
-                const customerName = document.getElementById('customerName').value;
-                const productQuantities = {};
-                const productQuantityInputs = document.querySelectorAll('#productSelectionTableBody input[type="number"]');
-                productQuantityInputs.forEach(input => {
-                    const productName = input.getAttribute('data-product-name');
-                    const quantity = parseInt(input.value);
-                    if (quantity > 0) {
-                        productQuantities[productName] = quantity;
-                    }
-                });
-
-                if (Object.keys(productQuantities).length === 0) {
-                    alert('Please select products and enter quantities.');
-                    return;
-                }
-
-                const products = shelvingData.filter(p => Object.keys(productQuantities).includes(p.productName));
-                const sales = products.map(product => {
-                    const quantity = productQuantities[product.productName];
-                    const totalPrice = product.productPrice * quantity;
-                    product.productQuantity -= quantity;
-                    return { customerName, productName: product.productName, sellQuantity: quantity, totalPrice };
-                });
-
-                sellingData.push(...sales);
-                salesData.push(...sales.map(sale => ({ ...sale, date: new Date().toISOString().split('T')[0] })));
-
-                saveData();
-
-                clearSellingFields();
-
-                const receipt = document.getElementById('receipt');
-                receipt.style.display = 'block';
-                receipt.innerHTML = `
-                    <h3>Order Details</h3>
-                    <div class="black-bar"></div>
-                    <p class="receipt-header">COZ.PH</p>
-                    <p>Customer Name: ${customerName}</p>
-                    <ul>
-                        ${products.map(product => `<li>${product.productName} x ${productQuantities[product.productName]}</li>`).join('')}
-                    </ul>
-                    <div class="black-bar"></div>
-                    <p>Total Price: ₱${sales.reduce((acc, sale) => acc + sale.totalPrice, 0).toFixed(2)}</p>
-                    <div class="black-bar"></div>
-                    <p class="receipt-footer">Thank you for shopping at COZ.PH!</p>
-                    <p style="text-align: center;">Phone: 056 711 9738</p>
-                    <p style="text-align: center;">Email: cozph@gmail.com</p>
-                `;
-            }
-
-            function loadSalesData() {
-                const salesContainer = document.getElementById('dailySalesContainer');
-                salesContainer.innerHTML = '';
-
-                // Group sales data by date
-                const salesByDate = salesData.reduce((acc, sale) => {
-                    const date = sale.date;
-                    if (!acc[date]) {
-                        acc[date] = [];
-                    }
-                    acc[date].push(sale);
-                    return acc;
-                }, {});
-
-                // Create collapsible sections for each date
-                for (const date in salesByDate) {
-                    const sales = salesByDate[date];
-                    const section = document.createElement('div');
-                    section.classList.add('sales-section');
-
-                    const header = document.createElement('div');
-                    header.classList.add('sales-header');
-                    header.innerText = date;
-                    header.onclick = () => toggleSalesDetails(section);
-                    section.appendChild(header);
-
-                    const details = document.createElement('div');
-                    details.classList.add('sales-details');
-                    details.style.display = 'none';
-
-                    const table = document.createElement('table');
-                    table.innerHTML = `
-                        <thead>
-                            <tr>
-                                <th>Customer Name</th>
-                                <th>Product</th>
-                                <th>Quantity</th>
-                                <th>Total Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${sales.map(sale => `
-                                <tr>
-                                    <td>${sale.customerName}</td>
-                                    <td>${sale.productName}</td>
-                                    <td>${sale.sellQuantity}</td>
-                                    <td>₱${(sale.totalPrice || 0).toFixed(2)}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
+        // Filter function for shelving
+        function filterShelving() {
+            const searchInput = document.getElementById('shelvingSearch').value.toLowerCase();
+            const tableBody = document.getElementById('shelvingTable').querySelector('tbody');
+            tableBody.innerHTML = '';
+            shelvingData.forEach((product, index) => {
+                if (product.productName.toLowerCase().includes(searchInput)) {
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td>${product.productName}</td>
+                            <td>₱${product.productPrice.toFixed(2)}</td>
+                            <td>${product.productQuantity}</td>
+                        </tr>
                     `;
-                    details.appendChild(table);
-                    section.appendChild(details);
-                    salesContainer.appendChild(section);
                 }
-            }
+            });
+        }
 
-            // Update restocking table
-            function updateRestockingTable() {
+        // Add restocking data
+        function addRestocking() {
+            const yarnName = document.getElementById('yarnName').value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const date = document.getElementById('date').value;
+
+            if (yarnName && quantity > 0 && date) {
+                restockingData.push({ yarnName, quantity, date });
+                updateRestockingTable();
+                clearRestockingFields();
+                saveData();
+            } else {
+                alert('Please fill out all fields.');
+            }
+        }
+
+        // Add shelving data
+        function addShelving() {
+            const productName = document.getElementById('productName').value;
+            const productPrice = parseFloat(document.getElementById('productPrice').value);
+            const productQuantity = parseInt(document.getElementById('productQuantity').value);
+
+            if (productName && productPrice > 0 && productQuantity > 0) {
+                shelvingData.push({ productName, productPrice, productQuantity });
+                updateShelvingTable();
+                updateProductSelectionTable();
+                clearShelvingFields();
+                saveData();
+            } else {
+                alert('Please fill out all fields.');
+            }
+        }
+
+        function recordSale() {
+    const customerName = document.getElementById('customerName').value;
+    const productQuantities = {};
+    const productQuantityInputs = document.querySelectorAll('#productSelectionTableBody input[type="number"]');
+    
+    productQuantityInputs.forEach(input => {
+        const productName = input.getAttribute('data-product-name');
+        const quantity = parseInt(input.value);
+        if (quantity > 0) {
+            productQuantities[productName] = quantity;
+        }
+    });
+
+    if (Object.keys(productQuantities).length === 0) {
+        alert('Please select products and enter quantities.');
+        return;
+    }
+
+    const products = shelvingData.filter(p => Object.keys(productQuantities).includes(p.productName));
+    const sales = products.map(product => {
+        const quantity = productQuantities[product.productName];
+        const totalPrice = product.productPrice * quantity;
+        product.productQuantity -= quantity; // Update the quantity of the product in the shelvingData
+        return { customerName, productName: product.productName, sellQuantity: quantity, totalPrice };
+    });
+
+    sellingData.push(...sales);
+    salesData.push(...sales.map(sale => ({ ...sale, date: new Date().toISOString().split('T')[0] })));
+
+    saveData();
+
+    clearSellingFields();
+
+    const receipt = document.getElementById('receipt');
+    receipt.style.display = 'block';
+    receipt.innerHTML = `
+        <h3>Order Details</h3>
+        <div class="black-bar"></div>
+        <p class="receipt-header">COZ.PH</p>
+        <p>Customer Name: ${customerName}</p>
+        <ul>
+            ${products.map(product => `<li>${product.productName} x ${productQuantities[product.productName]}</li>`).join('')}
+        </ul>
+        <div class="black-bar"></div>
+        <p>Total Price: ₱${sales.reduce((acc, sale) => acc + sale.totalPrice, 0).toFixed(2)}</p>
+        <div class="black-bar"></div>
+        <p class="receipt-footer">Thank you for shopping at COZ.PH!</p>
+        <p style="text-align: center;">Phone: 056 711 9738</p>
+        <p style="text-align: center;">Email: cozph@gmail.com</p>
+    `;
+
+    updateShelvingTable(); // Update the Shelving tab after recording the sale
+    updateMonthlySalesChart(); // Update the chart after recording the sale
+}
+
+function loadSalesData() {
+    const salesContainer = document.getElementById('dailySalesContainer');
+    salesContainer.innerHTML = '';
+
+    // Group sales data by date and calculate total earnings
+    const salesByDate = salesData.reduce((acc, sale) => {
+        const date = sale.date;
+        if (!acc[date]) {
+            acc[date] = { sales: [], total: 0 }; // Initialize total earnings
+        }
+        acc[date].sales.push(sale);
+        acc[date].total += sale.totalPrice; // Accumulate total earnings
+        return acc;
+    }, {});
+
+    // Create collapsible sections for each date
+    for (const date in salesByDate) {
+        const { sales, total } = salesByDate[date]; // Destructure the sales and total
+        const section = document.createElement('div');
+        section.classList.add('sales-section');
+
+        const header = document.createElement('div');
+        header.classList.add('sales-header');
+        header.innerText = `${date} - Total Earnings: ₱${total.toFixed(2)}`; // Display total earnings
+
+        // Create print button
+        const printButton = document.createElement('button');
+        printButton.innerText = 'Print';
+        printButton.onclick = () => printSales(date);
+        printButton.style.marginLeft = '10px'; // Add some space between the header and button
+
+        header.appendChild(printButton); // Append the print button to the header
+        header.onclick = () => toggleSalesDetails(section);
+        section.appendChild(header);
+
+        const details = document.createElement('div');
+        details.classList.add('sales-details');
+        details.style.display = 'none';
+
+        const table = document.createElement('table');
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${sales.map((sale, index) => `
+                    <tr>
+                        <td>${sale.customerName}</td>
+                        <td>${sale.productName}</td>
+                        <td>${sale.sellQuantity}</td>
+                        <td>₱${(sale.totalPrice || 0).toFixed(2)}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        `;
+        details.appendChild(table);
+        section.appendChild(details);
+        salesContainer.appendChild(section);
+    }
+}
+
+        // Update restocking table
+function updateRestockingTable() {
     const table = document.getElementById('restockingTable').querySelector('tbody');
     table.innerHTML = '';
-    restockingData.forEach(item => {
+    restockingData.forEach((item, index) => {
         table.innerHTML += `
             <tr>
                 <td>${item.yarnName}</td>
-                <td>${item.quantity}</td>
+                <td>
+                    <span>${item.quantity}</span>
+                    <button class="quantity-button" onclick="changeQuantity(${index}, 1)">+</button>
+                </td>
                 <td>${item.date}</td>
-                <td></td> <!-- Removed the button -->
             </tr>
         `;
     });
 }
 
-            // Update shelving table
-            function updateShelvingTable() {
-                const shelvingTable = document.getElementById('shelvingTable').querySelector('tbody');
-                shelvingTable.innerHTML = '';
-
-                shelvingData.forEach((product, index) => {
-                    shelvingTable.innerHTML += `
-                        <tr>
-                            <td>${product.productName}</td>
-                            <td> ₱${product.productPrice.toFixed(2)}</td>
-                            <td>${product.productQuantity}</td>
-                            <td></td> <!-- Removed the button -->
-                        </tr>
-                    `;
-                });
+// Change quantity function
+function changeQuantity(index, change) {
+    if (restockingData[index]) {
+        // Confirm the quantity change
+        const confirmChange = confirm(`Are you sure you want to change the quantity of ${restockingData[index].yarnName} by ${change}?`);
+        if (confirmChange) {
+            restockingData[index].quantity += change;
+            if (restockingData[index].quantity < 0) {
+                restockingData[index].quantity = 0; // Prevent negative quantity
             }
+            restockingData[index].date = new Date().toISOString().split('T')[0]; // Update date to today
+            updateRestockingTable();
+            saveData();
+        }
+    }
+}
 
-            // Remove item
-            function removeItem(type, index) {
-                if (type === 'restocking') {
-                    restockingData.splice(index, 1);
-                } else if (type === 'shelving') {
-                    shelvingData.splice(index, 1);
-                }
-                updateRestockingTable();
-                updateShelvingTable();
-            }
 
-            // Clear input fields
-            function clearRestockingFields() {
-                document.getElementById('yarnName').value = '';
-                document.getElementById('quantity').value = '';
-                document.getElementById('date').value = '';
-            }
+        // Update shelving table
+function updateShelvingTable() {
+    const shelvingTable = document.getElementById('shelvingTable').querySelector('tbody');
+    shelvingTable.innerHTML = '';
 
-            function clearShelvingFields() {
-                document.getElementById('productName').value = '';
-                document.getElementById('productPrice').value = '';
-                document.getElementById('productQuantity').value = '';
-            }
+    shelvingData.forEach((product, index) => {
+        shelvingTable.innerHTML += `
+            <tr>
+                <td>${product.productName}</td>
+                <td>₱${product.productPrice.toFixed(2)}</td>
+                <td>
+                    <span>${product.productQuantity}</span>
+                    <button class="quantity-button" onclick="changeShelvingQuantity(${index}, 1)">+</button>
+                </td>
+            </tr>
+        `;
+    });
+}
 
-            function clearSellingFields() {
-                document.getElementById('customerName').value = '';
-            }
 
-            // Call load data function on page load
-            window.onload = function() {
-                loadData();
-                updateMonthlyPerformanceChart();
-            }
+    // Archive item
+    function archiveItem(type, index) {
+let item;
+if (type === 'restocking') {
+    const confirmArchive = confirm(`Are you sure you want to archive ${restockingData[index].yarnName}?`);
+    if (confirmArchive) {
+        item = restockingData.splice(index, 1)[0];
+        archivedData.push({ type, ...item });
+        updateRestockingTable();
+        updateArchiveTable();
+        saveData(); // Make sure to save data here
+    }
+} else if (type === 'shelving') {
+    const confirmArchive = confirm(`Are you sure you want to archive ${shelvingData[index].productName}?`);
+    if (confirmArchive) {
+        item = shelvingData.splice(index, 1)[0];
+        archivedData.push({ type, ...item });
+        updateShelvingTable();
+        updateArchiveTable();
+        saveData(); // Make sure to save data here
+    }
+}
+}
+        // Update archive table
+        function updateArchiveTable() {
+const table = document.getElementById('archiveTable').querySelector('tbody');
+table.innerHTML = ''; // Clear the current table
+archivedData.forEach(item => {
+    table.innerHTML += `
+        <tr>
+            <td>${item.type}</td>
+            <td>${item.yarnName || item.productName}</td>
+            <td>${item.quantity || item.productQuantity}</td>
+            <td>${item.date || ''}</td>
+        </tr>
+    `;
+});
+}
 
-            // Update monthly performance chart
-            function updateMonthlyPerformanceChart() {
-                const ctx = document.getElementById('monthlyPerformanceChart').getContext('2d');
-                const monthlySales = new Array(12).fill(0);
+        // Clear input fields
+        function clearRestockingFields() {
+            document.getElementById('yarnName').value = '';
+            document.getElementById('quantity').value = '';
+            document.getElementById('date').value = '';
+        }
 
-                // Calculate monthly sales
-                salesData.forEach(sale => {
-                    const date = new Date(sale.date);
-                    const month = date.getMonth();
-                    monthlySales[month] += sale.totalPrice;
-                });
+        function clearShelvingFields() {
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productQuantity').value = '';
+        }
 
-                const chart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                        datasets: [{
-                            label: 'Monthly Sales',
-                            data: monthlySales,
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)',
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
-                            ],
-                            borderColor: [
-                                'rgba(255, 99, 132, 1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)',
-                                'rgba(255, 99, 132, 1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
+        function clearSellingFields() {
+            document.getElementById('customerName').value = '';
+        }
+
+        // Toggle sales details visibility
+        function toggleSalesDetails(section) {
+            const details = section.querySelector('.sales-details');
+            details.style.display = details.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Call load data function on page load
+        window.onload = function() {
+loadData();
+showTab('restocking'); // Ensure the restocking tab is shown on load
+updateMonthlySalesChart(); // Call this function as well
+}
+
+        // Update monthly sales chart
+        function updateMonthlySalesChart() {
+            const ctx = document.getElementById('monthlySalesChart').getContext('2d');
+            const monthlySales = new Array(12).fill(0);
+
+            // Calculate monthly sales
+            salesData.forEach(sale => {
+                const date = new Date(sale.date);
+                const month = date.getMonth();
+                monthlySales[month] += sale.totalPrice;
+            });
+
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                    datasets: [{
+                        label: 'Monthly Sales',
+                        data: monthlySales,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)',
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
                         }
                     }
-                });
+                }
+            });
 
-                // Update chart data
-                chart.data.datasets[0].data = monthlySales;
-                chart.update();
+            // Update chart data
+            chart.data.datasets[0].data = monthlySales;
+            chart.update();
+        }
+
+        window.onload = function() {
+    // Set today's date in the date input
+    const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+    document.getElementById('date').value = today; // Set the value of the date input
+
+    // Load data and show the restocking tab
+    loadData();
+    showTab('restocking'); // Ensure the restocking tab is shown on load
+    updateMonthlySalesChart(); // Call this function as well
+}
+function printSales(date) {
+    const sales = salesData.filter(sale => sale.date === date);
+    
+    // Calculate total earnings for the specified date
+    const totalEarnings = sales.reduce((acc, sale) => acc + sale.totalPrice, 0);
+
+    let printContent = `
+        <html>
+            <head>
+                <title>Print Sales - ${date}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; }
+                    table { width: 100%; border-collapse: collapse; }
+                    th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+                    th { background-color: #f0f4f8; }
+                </style>
+            </head>
+            <body>
+                <h2>Sales for ${date}</h2>
+                <h3>Total Earnings: ₱${totalEarnings.toFixed(2)}</h3> <!-- Display total earnings -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${sales.map(sale => `
+                            <tr>
+                                <td>${sale.customerName}</td>
+                                <td>${sale.productName}</td>
+                                <td>${sale.sellQuantity}</td>
+                                <td>₱${(sale.totalPrice || 0).toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </body>
+        </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+
+    // Delay the print to ensure the content is fully loaded
+    printWindow.onload = function() {
+        printWindow.print();
+    }
+}
+
+function printMonthlySales() {
+    const canvas = document.getElementById('monthlySalesChart');
+    const dataUrl = canvas.toDataURL(); // Get the chart as a data URL
+
+    // Calculate total earnings for the year
+    const totalEarningsForYear = salesData.reduce((acc, sale) => {
+        const saleDate = new Date(sale.date);
+        const year = saleDate.getFullYear();
+        const currentYear = new Date().getFullYear();
+        if (year === currentYear) {
+            return acc + sale.totalPrice;
+        }
+        return acc;
+    }, 0);
+
+    const printContent = `
+        <html>
+            <head>
+                <title>Print Monthly Performance</title>
+                <style>
+                    body { font-family: Arial, sans-serif; text-align: center; }
+                    img { max-width: 100%; height: auto; }
+                </style>
+            </head>
+            <body>
+                <h2>Monthly Sales Performance</h2>
+                <img src="${dataUrl}" />
+                <h3>Total Earnings for ${new Date().getFullYear()}: ₱${totalEarningsForYear.toFixed(2)}</h3>
+            </body>
+        </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+
+    // Delay the print to ensure the image is fully loaded
+    printWindow.onload = function() {
+        printWindow.print();
+    }
+}
+// Function to set today's date in the date input
+function setTodayDate() {
+const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+document.getElementById('date').value = today; // Set the value of the date input
+}
+
+// Call load data function on page load
+window.onload = function() {
+setTodayDate(); // Set today's date on initial load
+loadData();
+showTab('restocking'); // Ensure the restocking tab is shown on load
+updateMonthlySalesChart(); // Call this function as well
+}
+
+function addRestocking() {
+const yarnName = document.getElementById('yarnName').value;
+const quantity = parseInt(document.getElementById('quantity').value);
+const date = document.getElementById('date').value; // You can keep this line if you want to store the date as well
+
+if (yarnName && quantity > 0) {
+    restockingData.push({ yarnName, quantity, date: new Date().toISOString().split('T')[0] }); // Set the date to today
+    updateRestockingTable();
+    clearRestockingFields();
+    setTodayDate(); // Reset the date to today after adding the item
+    saveData();
+} else {
+    alert('Please fill out all fields.');
+}
+}
+// Add event listener for tab change
+document.getElementById('restockingTab').addEventListener('click', function() {
+    setTodayDate(); // Reset date input when the Restocking tab is clicked
+});
+// Change shelving quantity function
+function changeShelvingQuantity(index, change) {
+    if (shelvingData[index]) {
+        // Confirm the quantity change
+        const confirmChange = confirm(`Are you sure you want to change the quantity of ${shelvingData[index].productName} by ${change}?`);
+        if (confirmChange) {
+            shelvingData[index].productQuantity += change;
+            if (shelvingData[index].productQuantity < 0) {
+                shelvingData[index].productQuantity = 0; // Prevent negative quantity
             }
-        </script>
-    </body>
+            updateShelvingTable();
+            saveData();
+        }
+    }
+}
+function filterRestocking() {
+    const searchInput = document.getElementById('restockingSearch').value.toLowerCase();
+    const tableBody = document.getElementById('restockingTable').querySelector('tbody');
+    tableBody.innerHTML = '';
+
+    restockingData.forEach((item, index) => {
+    if (item.yarnName.toLowerCase().includes(searchInput)) {
+        tableBody.innerHTML += `
+            <tr>
+                <td>${item.yarnName}</td>
+                <td>
+                    <span>${item.quantity}</span>
+                    <button class="quantity-button" onclick="changeQuantity(${index}, 1)">+</button>
+                </td>
+                <td>${item.date}</td>
+                <td><button onclick="archiveItem('restocking', ${index})">Archive</button></td>
+            </tr>
+        `;
+    }
+});
+}
+function loadMonthlySalesData() {
+    const monthlySalesContainer = document.getElementById('monthlySalesContainer');
+    monthlySalesContainer.innerHTML = '';
+
+    // Group sales data by month and calculate total earnings
+    const salesByMonth = salesData.reduce((acc, sale) => {
+        const saleDate = new Date(sale.date);
+        const month = saleDate.getMonth();
+        const year = saleDate.getFullYear();
+        const monthYearKey = `${year}-${month + 1}`; // Create a unique key for each month
+
+        if (!acc[monthYearKey]) {
+            acc[monthYearKey] = { sales: [], total: 0 };
+        }
+        acc[monthYearKey].sales.push(sale);
+        acc[monthYearKey].total += sale.totalPrice; // Accumulate total earnings
+        return acc;
+    }, {});
+
+    // Create sections for each month
+    for (const key in salesByMonth) {
+        const { sales, total } = salesByMonth[key];
+        const section = document.createElement('div');
+        section.classList.add('sales-section');
+
+        const header = document.createElement('div');
+        header.classList.add('sales-header');
+        header.innerText = `${key} - Total Earnings: ₱${total.toFixed(2)}`;
+
+        // Create print button
+        const printButton = document.createElement('button');
+        printButton.innerText = 'Print';
+        printButton.onclick = () => printMonthlySales(key);
+        printButton.style.marginLeft = '10px'; // Add some space between the header and button
+
+        header.appendChild(printButton); // Append the print button to the header
+        header.onclick = () => toggleSalesDetails(section);
+        section.appendChild(header);
+
+        const details = document.createElement('div');
+        details.classList.add('sales-details');
+        details.style.display = 'none';
+
+        const table = document.createElement('table');
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${sales.map(sale => `
+                    <tr>
+                        <td>${sale.customerName}</td>
+                        <td>${sale.productName}</td>
+                        <td>${sale.sellQuantity}</td>
+                        <td>₱${(sale.totalPrice || 0).toFixed(2)}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        `;
+        details.appendChild(table);
+        section.appendChild(details);
+        monthlySalesContainer.appendChild(section);
+    }
+}
+
+function toggleSalesDetails(section) {
+    const details = section.querySelector('.sales-details');
+    details.style.display = details.style.display === 'none' ? 'block' : 'none';
+}
+
+// Call this function on page load or when switching to the Monthly Sales tab
+function showMonthlySales() {
+    loadMonthlySalesData();
+    showTab('monthlySales'); // Ensure the Monthly Sales tab is shown
+}
+function toggleArchive() {
+const modal = document.getElementById('archiveModal');
+modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; // Toggle the display style
+updateArchiveTable(); // Update the archive table whenever the modal is opened
+}
+// Function to save data to local storage
+function saveData() {
+localStorage.setItem('restockingData', JSON.stringify(restockingData));
+localStorage.setItem('shelvingData', JSON.stringify(shelvingData));
+localStorage.setItem('sellingData', JSON.stringify(sellingData));
+localStorage.setItem('archivedData', JSON.stringify(archivedData)); // Save archived data
+localStorage.setItem('salesData', JSON.stringify(salesData));
+}
+    </script>
+</body>
 </html>
