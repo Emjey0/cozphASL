@@ -3,373 +3,446 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASL System - Tables Only</title>
+    <title>ASL System - Guest Account</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
-            display: flex;
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to right, #f7d9d9, #f0f4f8);
+}
+
+.button-container {
+    position: fixed;
+    top: 80px; /* Adjusted position to lower the buttons */
+    left: 10px;
+    display: flex;
+    flex-direction: column; /* Align buttons vertically */
+    gap: 10px; /* Space between buttons */
+}
+
+.logout-button, .archive-button, .contact-button  {
+    background-color: #ffb3b3;
+    color: white;
+    padding: 15px; /* Increased padding for a longer button */
+    border-radius: 10px;
+    cursor: pointer;
+    width: 120px; /* Fixed width for both buttons */
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover, .archive-button:hover {
+    background-color: #ff8e8e;
+}
+
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 20px auto;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+}
+
+h1 {
+    text-align: center;
+    color: #444;
+    font-size: 2.5rem;
+    margin-bottom: 10px; /* Adjusted margin */
+}
+
+.coz-button {
+    display: block;
+    width: fit-content;
+    margin: 10px auto; /* Adjusted margin to be closer to the title */
+    padding: 12px 20px;
+    background-color: #ffb3b3;
+    color: white;
+    text-align: center;
+    border-radius: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.coz-button:hover {
+    background-color: #ff8e8e;
+    transform: translateY(-2px);
+}
+
+.tabs {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 0;
+    border-bottom: 2px solid #d1e7e1;
+    padding-left: 10px;
+}
+
+.tab {
+    padding: 12px 20px;
+    background-color: #f0f4f8;
+    border: 1px solid #d1e7e1;
+    border-bottom: none;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #333;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-right: 5px;
+}
+
+.tab.active {
+    background-color: #fff;
+    color: #444;
+    font-weight: bold;
+    border-bottom: 2px solid #fff;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d1e7e1;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+h2 {
+    color: #444;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1e7e1;
+    border-radius: 8px;
+    background-color: #fefcf9;
+    color: #333;
+    font-size: 1rem;
+}
+
+.form-group button {
+    padding: 10px 15px;
+    background-color: #ffb3b3;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.form-group button:hover {
+    background-color: #ff8e8e;
+    transform: translateY(-2px);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #d1e7e1;
+    text-align: left;
+}
+
+th {
+    background-color: #f0f4f8;
+    color: #333;
+}
+
+/* Enhanced Receipt Styles */
+#receipt {
+    font-family: 'Courier New', monospace;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    padding: 20px;
+    border: 1px solid #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#receipt h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#receipt p {
+    margin: 10px 0;
+}
+
+#receipt .receipt-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#receipt .receipt-footer {
+    font-size: 1.1rem;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.black-bar {
+    background-color: #333;
+    height: 2px;
+    margin: 10px 0;
+}
+
+.archive-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.archive-content {
+    width: 90%;
+    max-width: 500px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.archive-content h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ffb3b3;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    background-color: #ff8e8e;
+}
+
+.tab-content {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.sales-section {
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.sales-header {
+    padding: 10px;
+    background-color: #ffb3b3;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.sales-header:hover {
+    background-color: #ff8e8e;
+}
+
+.sales-details {
+    padding: 10px;
+    display: none;
+}
+
+.quantity-button {
+    padding: 3px 5px; /* Further reduced padding */
+    font-size: 0.7rem; /* Smaller font size */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #ffb3b3;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.quantity-button:hover {
+    background-color: #ff8e8e;
+}
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none; /* Hidden by default */
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: linear-gradient(to right, #f7d9d9, #f0f4f8);
         }
 
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            margin: 20px auto;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-radius: 10px;
+        .modal-content {
+            background-color: white;
             padding: 20px;
-            position: relative;
-        }
-
-        h1 {
-            text-align: center;
-            color: #444;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-
-        .tabs {
-            display: flex;
-            justify-content: flex-start;
-            margin-bottom: 0;
-            border-bottom: 2px solid #d1e7e1;
-            padding-left: 10px;
-        }
-
-        .tab {
-            padding: 12px 20px;
-            background-color: #f0f4f8;
-            border: 1px solid #d1e7e1;
-            border-bottom: none;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            color: #333;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            margin-right: 5px;
-        }
-
-        .tab.active {
-            background-color: #fff;
-            color: #444;
-            font-weight: bold;
-            border-bottom: 2px solid #fff;
-        }
-
-        .tab-content {
-            display: none;
-            padding: 20px;
-            background-color: #fff;
             border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border: 1px solid #d1e7e1;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        h2 {
-            color: #444;
-            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             text-align: center;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            padding: 10px;
-            border: 1px solid #d1e7e1;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f0f4f8;
-            color: #333;
-        }
-
-        .sales-section {
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-
-        .sales-header {
-            padding: 10px;
+        .close-modal {
             background-color: #ffb3b3;
             color: white;
-            cursor: pointer;
-            font-weight: bold;
+            border: none;
+            padding: 10px;
             border-radius: 5px;
-        }
-
-        .sales-header:hover {
-            background-color: #ff8e8e;
-        }
-
-        .sales-details {
-            padding: 10px;
-            display: none;
-        }
-
-        /* Logout button styles */
-        .logout-button {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: #ffb3b3;
-            color: white;
-            padding: 10px;
-            border-radius: 10px;
             cursor: pointer;
+            margin-top: 10px;
         }
 
-        .logout-button:hover {
+        .close-modal:hover {
             background-color: #ff8e8e;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="button-container">
         <button class="logout-button" onclick="location.href='index.html'">Logout</button>
-        <h1>ASL System</h1>
+        <button class="contact-button" onclick="openContactModal()">Contact Us</button>
+    </div>
 
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab active" onclick="showTab('restocking')">Restocking</button>
-            <button class="tab" onclick="showTab('shelving')">Shelving</button>
-            <button class="tab " onclick="showTab('dailySales')">Daily Sales</button>
-            <button class="tab" onclick="showTab('monthlyPerformance')">Monthly Performance</button>
-        </div>
+    <div class="container">
+        <h1>ASL System - Guest Account</h1>
 
-        <!-- Restocking Tab Content -->
-        <div id="restocking" class="tab-content active">
-            <h2>Restocking Yarn</h2>
-            <table id="restockingTable">
-                <thead>
-                    <tr>
-                        <th>Yarn Name</th>
-                        <th>Quantity</th>
-                        <th>Date of Purchase</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+        <!-- CO Z.PH Button -->
+        <a href="https://www.instagram.com/coz.ph?igshid=MTc2emo4ZWdtczluYg==" target="_blank" class="coz-button">COZ.PH</a>
 
         <!-- Shelving Tab Content -->
-        <div id="shelving" class="tab-content">
-            <h2>Shelving Products</h2>
+        <div id="shelving" class="tab-content active">
+            <h2>Available Items</h2>
+            <div class="form-group">
+                <label for="shelvingSearch">Search:</label>
+                <input type="text" id="shelvingSearch" onkeyup="filterShelving()" placeholder="Search for products...">
+            </div>
             <table id="shelvingTable">
                 <thead>
                     <tr>
                         <th>Product Name</th>
                         <th>Price</th>
                         <th>Quantity</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
-
-     <!-- Daily Sales Tab Content -->
-     <div id="dailySales" class="tab-content">
-        <h2>Daily Sales</h2>
-        <div id="dailySalesContainer"></div>
     </div>
 
-        <!-- Monthly Performance Tab Content -->
-        <div id="monthlyPerformance" class="tab-content">
-            <h2>Monthly Performance</h2>
-            <canvas id="monthlyPerformanceChart" width="400" height="200"></canvas>
+    <!-- Contact Modal -->
+    <div class="modal" id="contactModal">
+        <div class="modal-content">
+            <h2>Contact Information</h2>
+            <p>Phone: 056 711 9738</p>
+            <p>Email: <a href="mailto:cozph@gmail.com">cozph@gmail.com</a></p>
+            <p>Main Social Media Page: <a href="https://www.instagram.com/coz.ph?igshid=MTc2emo4ZWdtczluYg==" target="_blank">Instagram</a></p>
+            <button class="close-modal" onclick="closeContactModal()">Close</button>
         </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            // Variables for storing data
-            let restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
-            let shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
-            let salesData = JSON.parse(localStorage.getItem('salesData')) || [];
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Variables for storing data
+        let shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
 
-            // Function to save data to local storage
-            function saveData() {
-                localStorage.setItem('restockingData', JSON.stringify(restockingData));
-                localStorage.setItem('shelvingData', JSON.stringify(shelvingData));
-                localStorage.setItem('salesData', JSON.stringify(salesData));
-            }
+        // Function to load data
+        function loadData() {
+            shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
+            updateShelvingTable();
+        }
 
-            // Function to show and hide tabs
-            function showTab(tabId) {
-                const tabs = document.querySelectorAll('.tab-content');
-                tabs.forEach(tab => tab.classList.remove('active'));
+        // Update shelving table
+        function updateShelvingTable() {
+            const shelvingTable = document.getElementById('shelvingTable').querySelector('tbody');
+            shelvingTable.innerHTML = '';
 
-                document.getElementById(tabId).classList.add('active');
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
-            }
+            shelvingData.forEach((product) => {
+                shelvingTable.innerHTML += `
+                    <tr>
+                        <td>${product.productName}</td>
+                        <td>₱${product.productPrice.toFixed(2)}</td>
+                        <td>${ product.productQuantity}</td>
+                    </tr>
+                `;
+            });
+        }
 
-            // Toggle sales details function
-            function toggleSalesDetails(section) {
-                const details = section.querySelector('.sales-details');
-                details.style.display = details.style.display === 'none' ? 'block' : 'none';
-            }
-
-            function loadData() {
-                restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
-                shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
-                salesData = JSON.parse(localStorage.getItem('salesData')) || [];
-
-                // Update UI with loaded data
-                updateRestockingTable();
-                updateShelvingTable();
-                loadSalesData();
-                updateMonthlyPerformanceChart();
-            }
-
-            // Update restocking table
-            function updateRestockingTable() {
-                const table = document.getElementById('restockingTable').querySelector('tbody');
-                table.innerHTML = '';
-                restockingData.forEach((item, index) => {
-                    table.innerHTML += `
-                        <tr>
-                            <td>${item.yarnName}</td>
-                            <td>${item.quantity}</td>
-                            <td>${item.date}</td>
-                            <td></td>
-                        </tr>
-                    `;
-                });
-            }
-
-            // Update shelving table
-            function updateShelvingTable() {
-                const shelvingTable = document.getElementById('shelvingTable').querySelector('tbody');
-                shelvingTable.innerHTML = '';
-
-                shelvingData.forEach((product, index) => {
-                    shelvingTable.innerHTML += `
+        // Filter function for shelving
+        function filterShelving() {
+            const searchInput = document.getElementById('shelvingSearch').value.toLowerCase();
+            const tableBody = document.getElementById('shelvingTable').querySelector('tbody');
+            tableBody.innerHTML = '';
+            shelvingData.forEach((product) => {
+                if (product.productName.toLowerCase().includes(searchInput)) {
+                    tableBody.innerHTML += `
                         <tr>
                             <td>${product.productName}</td>
-                            <td> ₱${product.productPrice.toFixed(2)}</td>
+                            <td>₱${product.productPrice.toFixed(2)}</td>
                             <td>${product.productQuantity}</td>
-                            <td></td>
                         </tr>
                     `;
-                });
-            }
-
-            // Load sales data
-            function loadSalesData() {
-                const salesContainer = document.getElementById('dailySalesContainer');
-                salesContainer.innerHTML = '';
-
-                // Group sales data by date
-                const salesByDate = salesData.reduce((acc, sale) => {
-                    const date = sale.date;
-                    if (!acc[date]) {
-                        acc[date] = [];
-                    }
-                    acc[date].push(sale);
-                    return acc;
-                }, {});
-
-                // Create collapsible sections for each date
-                for (const date in salesByDate) {
-                    const sales = salesByDate[date];
-                    const section = document.createElement('div');
-                    section.classList.add('sales-section');
-
-                    const header = document.createElement('div');
-                    header.classList.add('sales-header');
-                    header.innerText = date;
-                    header.onclick = () => toggleSalesDetails(section);
-                    section.appendChild(header);
-
-                    const details = document.createElement('div');
-                    details.classList.add('sales-details');
-                    details.style.display = 'none';
-
-                    const table = document.createElement('table');
-                    table.innerHTML = `
-                        <thead>
-                            <tr>
-                                <th>Customer Name </th>
-                                <th>Product</th>
-                                <th>Quantity</th>
-                                <th>Total Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${sales.map(sale => `
-                                <tr>
-                                    <td>${sale.customerName}</td>
-                                    <td>${sale.productName}</td>
-                                    <td>${sale.sellQuantity}</td>
-                                    <td> ₱${(sale.totalPrice || 0).toFixed(2)}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    `;
-                    details.appendChild(table);
-                    section.appendChild(details);
-                    salesContainer.appendChild(section);
                 }
-            }
+            });
+        }
 
-            // Update monthly performance chart
-            function updateMonthlyPerformanceChart() {
-                const ctx = document.getElementById('monthlyPerformanceChart').getContext('2d');
-                const monthlySales = new Array(12).fill(0);
+        // Open contact modal
+        function openContactModal() {
+            document.getElementById('contactModal').style.display = 'flex';
+        }
 
-                // Calculate monthly sales
-                salesData.forEach(sale => {
-                    const month = new Date(sale.date).getMonth();
-                    monthlySales[month] += sale.totalPrice;
-                });
+        // Close contact modal
+        function closeContactModal() {
+            document.getElementById('contactModal').style.display = 'none';
+        }
 
-                // Create chart
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                        datasets: [{
-                            label: 'Monthly Sales',
-                            data: monthlySales,
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Load data on page load
+        // Call load data function on page load
+        window.onload = function() {
             loadData();
-        </script>
-    </div>
+        }
+    </script>
 </body>
 </html>
