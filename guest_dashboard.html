@@ -6,304 +6,140 @@
     <title>ASL System - Guest Account</title>
     <style>
         body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: linear-gradient(to right, #f7d9d9, #f0f4f8);
-}
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #f7d9d9, #f0f4f8);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
 
-.button-container {
-    position: fixed;
-    top: 80px; /* Adjusted position to lower the buttons */
-    left: 10px;
-    display: flex;
-    flex-direction: column; /* Align buttons vertically */
-    gap: 10px; /* Space between buttons */
-}
+        header {
+            background-color: #ffb3b3;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-size: 2rem;
+            border-bottom: 2px solid #d1e7e1;
+        }
 
-.logout-button, .archive-button, .contact-button  {
-    background-color: #ffb3b3;
-    color: white;
-    padding: 15px; /* Increased padding for a longer button */
-    border-radius: 10px;
-    cursor: pointer;
-    width: 120px; /* Fixed width for both buttons */
-    text-align: center;
-    transition: background-color 0.3s ease;
-}
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+        }
 
-.logout-button:hover, .archive-button:hover {
-    background-color: #ff8e8e;
-}
+        .logout-button, .contact-button {
+            background-color: #ffb3b3;
+            color: black;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            min-width: 120px; /* Ensure buttons have a minimum width */
+        }
 
-.container {
-    width: 90%;
-    max-width: 1000px;
-    margin: 20px auto;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border-radius: 10px;
-    padding: 20px;
-    position: relative;
-}
+        .logout-button:hover, .contact-button:hover {
+            background-color: #ff8e8e;
+        }
 
-h1 {
-    text-align: center;
-    color: #444;
-    font-size: 2.5rem;
-    margin-bottom: 10px; /* Adjusted margin */
-}
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
 
-.coz-button {
-    display: block;
-    width: fit-content;
-    margin: 10px auto; /* Adjusted margin to be closer to the title */
-    padding: 12px 20px;
-    background-color: #ffb3b3;
-    color: white;
-    text-align: center;
-    border-radius: 30px;
-    font-weight: bold;
-    text-decoration: none;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
+        h1 {
+            text-align: center;
+            color: #444;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
 
-.coz-button:hover {
-    background-color: #ff8e8e;
-    transform: translateY(-2px);
-}
+        .coz-button {
+            display: block;
+            width: fit-content;
+            margin: 10px auto;
+            padding: 12px 20px;
+            background-color: #ffb3b3;
+            color: white;
+            text-align: center;
+            border-radius: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
 
-.tabs {
-    display: flex;
-    justify-content: flex-start;
-    margin-bottom: 0;
-    border-bottom: 2px solid #d1e7e1;
-    padding-left: 10px;
-}
+        .coz-button:hover {
+            background-color: #ff8e8e;
+            transform: translateY(-2px);
+        }
 
-.tab {
-    padding: 12px 20px;
-    background-color: #f0f4f8;
-    border: 1px solid #d1e7e1;
-    border-bottom: none;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    color: #333;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-right: 5px;
-}
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
 
-.tab.active {
-    background-color: #fff;
-    color: #444;
-    font-weight: bold;
-    border-bottom: 2px solid #fff;
-}
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
 
-.tab-content {
-    display: none;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border: 1px solid #d1e7e1;
-}
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1e7e1;
+            border-radius: 8px;
+            background-color: #fefcf9;
+            color: #333;
+            font-size: 1rem;
+        }
 
-.tab-content.active {
-    display: block;
-}
+        .form-group button {
+            padding: 10px 15px;
+            background-color: #ffb3b3;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
 
-h2 {
-    color: #444;
-    margin-bottom: 10px;
-    text-align: center;
-}
+        .form-group button:hover {
+            background-color: #ff8e8e;
+            transform: translateY(-2px);
+        }
 
-.form-group {
-    margin-bottom: 15px;
-    text-align: left;
-}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
 
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    color: #666;
-}
+        th, td {
+            padding: 10px;
+            border: 1px solid #d1e7e1;
+            text-align: left;
+        }
 
-.form-group input, .form-group select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #d1e7e1;
-    border-radius: 8px;
-    background-color: #fefcf9;
-    color: #333;
-    font-size: 1rem;
-}
+        th {
+            background-color: #f0f4f8;
+            color: #333;
+        }
 
-.form-group button {
-    padding: 10px 15px;
-    background-color: #ffb3b3;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.form-group button:hover {
-    background-color: #ff8e8e;
-    transform: translateY(-2px);
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th, td {
-    padding: 10px;
-    border: 1px solid #d1e7e1;
-    text-align: left;
-}
-
-th {
-    background-color: #f0f4f8;
-    color: #333;
-}
-
-/* Enhanced Receipt Styles */
-#receipt {
-    font-family: 'Courier New', monospace;
-    font-size: 1.2rem;
-    line-height: 1.5;
-    padding: 20px;
-    border: 1px solid #333;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-#receipt h3 {
-    font-size: 1.8rem;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-#receipt p {
-    margin: 10px 0;
-}
-
-#receipt .receipt-header {
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-#receipt .receipt-footer {
-    font-size: 1.1rem;
-    margin-top: 20px;
-    text-align: center;
-}
-
-.black-bar {
-    background-color: #333;
-    height: 2px;
-    margin: 10px 0;
-}
-
-.archive-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
-    justify-content: center;
-    align-items: center;
-}
-
-.archive-content {
-    width: 90%;
-    max-width: 500px;
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.archive-content h2 {
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-.close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: #ffb3b3;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.close-button:hover {
-    background-color: #ff8e8e;
-}
-
-.tab-content {
-    max-height: 400px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 10px;
-    border: 1px solid #ddd;
-}
-
-.sales-section {
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-}
-
-.sales-header {
-    padding: 10px;
-    background-color: #ffb3b3;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 5px;
-}
-
-.sales-header:hover {
-    background-color: #ff8e8e;
-}
-
-.sales-details {
-    padding: 10px;
-    display: none;
-}
-
-.quantity-button {
-    padding: 3px 5px; /* Further reduced padding */
-    font-size: 0.7rem; /* Smaller font size */
-    border-radius: 5px; /* Rounded corners */
-    background-color: #ffb3b3;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.quantity-button:hover {
-    background-color: #ff8e8e;
-}
         /* Modal styles */
         .modal {
             position: fixed;
@@ -312,7 +148,7 @@ th {
             width: 100vw;
             height: 100vh;
             background-color: rgba(0, 0, 0, 0.5);
-            display: none; /* Hidden by default */
+            display: none;
             justify-content: center;
             align-items: center;
         }
@@ -323,126 +159,245 @@ th {
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             text-align: center;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            flex-grow: 1;
+            text-align: center;
+            margin: 0;
         }
 
         .close-modal {
-            background-color: #ffb3b3;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
+            font-size: 24px;
+            color: #ff4d4d;
             cursor: pointer;
-            margin-top: 10px;
+            transition: color 0.3s ease;
         }
 
         .close-modal:hover {
-            background-color: #ff8e8e;
+            color: #ff1a1a;
+        }
+
+        /* Enhanced Receipt Styles */
+        #receipt {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            line-height: 1.5;
+            padding: 20px;
+            border: 1px solid #333;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #receipt h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        #receipt p {
+            margin: 10px 0;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #ffb3b3;
+            color: black;
+            width: 100%;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            header {
+                font-size: 1.5rem; /* Smaller font size for mobile */
+            }
+
+            .button-container {
+                flex-direction: column; /* Stack buttons vertically */
+                align-items: stretch; /* Stretch buttons to full width */
+            }
+
+            .logout-button, .contact-button {
+                width: 100%; /* Full width buttons */
+                margin: 5px 0; /* Margin between buttons */
+            }
+
+            h1 {
+                font-size: 2rem; /* Smaller heading for mobile */
+            }
+
+            .container {
+                padding: 10px; /* Less padding on mobile */
+            }
+
+            .form-group input {
+                font-size: 0.9rem; /* Smaller input font size */
+            }
+
+            table {
+                display: block; /* Make table block for scrolling */
+                overflow-x: auto; /* Allow horizontal scrolling */
+                white-space: nowrap; /* Prevent text wrapping */
+            }
+
+            th, td {
+                padding: 8px; /* Smaller padding for table cells */
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                font-size: 1.2rem; /* Further reduce font size for very small screens */
+            }
+
+            h1 {
+                font-size: 1.5rem; /* Adjust heading size for small screens */
+            }
+
+            .logout-button, .contact-button {
+                padding: 10px; /* Reduce padding for buttons */
+                font-size: 0.9rem; /* Smaller font size for buttons */
+            }
+
+            .form-group input {
+                padding: 8px; /* Smaller padding for input fields */
+            }
+
+            #receipt {
+                font-size: 1rem; /* Adjust receipt font size */
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="button-container">
-        <button class="logout-button" onclick="location.href='index.html'">Logout</button>
-        <button class="contact-button" onclick="openContactModal()">Contact Us</button>
-    </div>
+<header>
+    <h1>Welcome to COZ.PH</h1>
+</header>
 
-    <div class="container">
-        <h1>ASL System - Guest Account</h1>
+<div class="button-container">
+    <button class="logout-button" onclick="return confirmLogout()">Logout</button>
+    <button class="contact-button" onclick="openContactModal()">Contact Us</button>
+</div>
 
-        <!-- CO Z.PH Button -->
-        <a href="https://www.instagram.com/coz.ph?igshid=MTc2emo4ZWdtczluYg==" target="_blank" class="coz-button">COZ.PH</a>
+<div class="container">
+    <h1>Available Items</h1>
+    <a href="https://www.instagram.com/coz.ph?igshid=MTc2emo4ZWdtczluYg==" target="_blank" class="coz-button" onclick="return confirmOpenLink('https://www.instagram.com/coz.ph?igshid=MTc2emo4ZWdtczluYg==')">COZ.PH</a>
 
-        <!-- Shelving Tab Content -->
-        <div id="shelving" class="tab-content active">
-            <h2>Available Items</h2>
-            <div class="form-group">
-                <label for="shelvingSearch">Search:</label>
-                <input type="text" id="shelvingSearch" onkeyup="filterShelving()" placeholder="Search for products...">
-            </div>
-            <table id="shelvingTable">
-                <thead>
-                    <tr>
-                        <th>Product Name</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+    <div id="shelving" class="tab-content active">
+        <p>Click the 'Contact Us' button to get started with your order!</p>
+        <div class="form-group">
+            <label for="shelvingSearch">Search:</label>
+            <input type="text" id="shelvingSearch" onkeyup="filterShelving()" placeholder="Search for products...">
         </div>
+        <table id="shelvingTable">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
+</div>
 
-    <!-- Contact Modal -->
-    <div class="modal" id="contactModal">
-        <div class="modal-content">
+<!-- Contact Modal -->
+<div class="modal" id="contactModal">
+    <div class="modal-content">
+        <div class="modal-header">
             <h2>Contact Information</h2>
-            <p>Phone: 056 711 9738</p>
-            <p>Email: <a href="mailto:cozph@gmail.com">cozph@gmail.com</a></p>
-            <p>Main Social Media Page: <a href="https://www.instagram.com/coz.ph?igshid=MTc2emo4ZWdtczluYg==" target="_blank">Instagram</a></p>
-            <button class="close-modal" onclick="closeContactModal()">Close</button>
+            <span class="close-modal" onclick="closeContactModal()">&times;</span>
         </div>
+        <p>Phone: 056 711 9738</p>
+        <p>Email: <a href="mailto:cozph@gmail.com">cozph@gmail.com</a></p>
+        <p>Feel free to ask questions with the contact information provided above !!!</p>
+        <p>Click the button below to dm us and order now from our official page !!!</p>
+        <a href="https://www.instagram.com/coz.ph?igshid=MTc2emo4ZWdtczluYg==" target="_blank" class="modal-instagram-button" onclick=" return confirmOpenLink('https://www.instagram.com/coz.ph?igshid=MTc2emo4ZWdtczluYg==')">Order Now!</a>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Variables for storing data
-        let shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
+<script>
+    let shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
 
-        // Function to load data
-        function loadData() {
-            shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
-            updateShelvingTable();
-        }
+    function loadData() {
+        shelvingData = JSON.parse(localStorage.getItem('shelvingData')) || [];
+        updateShelvingTable();
+    }
 
-        // Update shelving table
-        function updateShelvingTable() {
-            const shelvingTable = document.getElementById('shelvingTable').querySelector('tbody');
-            shelvingTable.innerHTML = '';
+    function updateShelvingTable() {
+        const shelvingTable = document.getElementById('shelvingTable').querySelector('tbody');
+        shelvingTable.innerHTML = '';
 
-            shelvingData.forEach((product) => {
-                shelvingTable.innerHTML += `
+        shelvingData.forEach((product) => {
+            shelvingTable.innerHTML += `
+                <tr>
+                    <td>${product.productName}</td>
+                    <td>₱${product.productPrice.toFixed(2)}</td>
+                    <td>${product.productQuantity}</td>
+                </tr>
+            `;
+        });
+    }
+
+    function filterShelving() {
+        const searchInput = document.getElementById('shelvingSearch').value.toLowerCase();
+        const tableBody = document.getElementById('shelvingTable').querySelector('tbody');
+        tableBody.innerHTML = '';
+        shelvingData.forEach((product) => {
+            if (product.productName.toLowerCase().includes(searchInput)) {
+                tableBody.innerHTML += `
                     <tr>
                         <td>${product.productName}</td>
                         <td>₱${product.productPrice.toFixed(2)}</td>
-                        <td>${ product.productQuantity}</td>
+                        <td>${product.productQuantity}</td>
                     </tr>
                 `;
-            });
-        }
+            }
+        });
+    }
 
-        // Filter function for shelving
-        function filterShelving() {
-            const searchInput = document.getElementById('shelvingSearch').value.toLowerCase();
-            const tableBody = document.getElementById('shelvingTable').querySelector('tbody');
-            tableBody.innerHTML = '';
-            shelvingData.forEach((product) => {
-                if (product.productName.toLowerCase().includes(searchInput)) {
-                    tableBody.innerHTML += `
-                        <tr>
-                            <td>${product.productName}</td>
-                            <td>₱${product.productPrice.toFixed(2)}</td>
-                            <td>${product.productQuantity}</td>
-                        </tr>
-                    `;
-                }
-            });
-        }
+    function openContactModal() {
+        document.getElementById('contactModal').style.display = 'flex';
+    }
 
-        // Open contact modal
-        function openContactModal() {
-            document.getElementById('contactModal').style.display = 'flex';
-        }
+    function closeContactModal() {
+        document.getElementById('contactModal').style.display = 'none';
+    }
 
-        // Close contact modal
-        function closeContactModal() {
-            document.getElementById('contactModal').style.display = 'none';
-        }
+    window.onload = function() {
+        loadData();
+    }
 
-        // Call load data function on page load
-        window.onload = function() {
-            loadData();
+    function confirmOpenLink(url) {
+        const userConfirmed = confirm("You are about to open a new tab. Do you want to continue?");
+        if (userConfirmed) {
+            window.open(url, '_blank');
         }
-    </script>
+        return false;
+    }
+
+    function confirmLogout() {
+        const userConfirmed = confirm("Are you sure you want to logout?");
+        if (userConfirmed) {
+            location.href = 'index.html'; // Change this to your actual logout URL
+        }
+        return false;
+    }
+</script>
+
+<footer>
+    <p>To order an item, simply message the official COZ.PH instagram account, found in the "Contact Us" button, the name of the item(s) and wait for further assistance.</p>
+</footer>
+
 </body>
 </html>
