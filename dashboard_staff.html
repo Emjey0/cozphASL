@@ -278,6 +278,26 @@
         .quantity-button:hover {
             background-color: #ff8e8e;
         }
+        .search-container {
+    display: flex; /* Use flexbox to align items horizontally */
+    margin-bottom: 20px; /* Space below the search container */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column; /* Stack label and input vertically */
+    margin-right: 5px; /* Reduced space between form groups */
+}
+
+.form-group label {
+    font-size: 0.9rem; /* Smaller font size for labels */
+}
+
+.search-input {
+    width: 60px; /* Set a fixed width for search input fields */
+    padding: 3px; /* Smaller padding for input fields */
+    font-size: 0.9rem; /* Smaller font size for input fields */
+}
     </style>
 </head>
 <body>
@@ -384,6 +404,20 @@
         <!-- Daily Sales Tab Content -->
 <div id="dailySales" class="tab-content">
     <h2>Daily Sales</h2>
+    <div class="search-container">
+        <div class="form-group">
+            <label for="searchYear">Year:</label>
+            <input type="number" class="search-input" id="searchYear" placeholder="YYYY" oninput="filterDailySales()" />
+        </div>
+        <div class="form-group">
+            <label for="searchMonth">Month:</label>
+            <input type="number" class="search-input" id="searchMonth" placeholder="1-12" min="1" max="12" oninput="filterDailySales()" />
+        </div>
+        <div class="form-group">
+            <label for="searchDay">Day:</label>
+            <input type="number" class="search-input" id="searchDay" placeholder="1-31" min="1" max="31" oninput="filterDailySales()" />
+        </div>
+    </div>
     <div id="dailySalesContainer"></div>
 </div>
 
