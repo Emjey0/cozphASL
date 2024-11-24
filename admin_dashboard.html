@@ -332,6 +332,14 @@
     border-radius: 5px; /* Optional: Rounded corners */
     margin-bottom: 20px; /* Space below the scrollable container */
 }
+.scrollable-container {
+    max-height: 200px; /* Set a maximum height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Hide horizontal scrolling */
+    border: 1px solid #ddd; /* Optional: Add a border for better visibility */
+    border-radius: 5px; /* Optional: Rounded corners */
+    margin-bottom: 20px; /* Space below the scrollable container */
+}
         </style>
     </head>
     <body>
@@ -494,28 +502,31 @@
         <button onclick="printMonthlySales()">Print Monthly Sales</button>
         <canvas id="monthlySalesChart" width="400" height="200"></canvas>
     </div>
-            <!-- Archive Modal Popup -->
-            <div id="archiveModal" class="archive-modal">
-                <div class="archive-content">
-                <div id="monthlySalesContainer"></div>
-                    <span class="close-button" onclick="toggleArchive()">Close</span>
-                    <h2>Archived Items</h2>
-                    <table id="archiveTable">
-                        <thead>
-                            <tr>
-                                <th>Type</th>
-                                <th>Name</th>
-                                <th>Quantity</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        
 
+            <!-- Archive Modal Popup -->
+<div id="archiveModal" class="archive-modal">
+    <div class="archive-content">
+        <span class="close-button" onclick="toggleArchive()">Close</span>
+        <h2>Archived Items</h2>
+        <button onclick="clearArchivedItems()" style="background-color: #ffb3b3; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 10px;">Clear Archive</button>
+        
+        <!-- Scrollable container for the archive table -->
+        <div class="scrollable-container" style="max-height: 200px; overflow-y: auto; overflow-x: hidden;">
+            <table id="archiveTable">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+        
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             // Variables for storing data
@@ -540,7 +551,9 @@
                 } else if (tabId === 'dailySales') {
                     loadSalesData();
                 }
+                    loadMonthlySalesData(); // Load monthly sales data when the Monthly Sales tab is shown
             }
+
             function loadData() {
     // Load data from local storage
     restockingData = JSON.parse(localStorage.getItem('restockingData')) || [];
@@ -625,136 +638,179 @@
             }
 
             function recordSale() {
-        const customerName = document.getElementById('customerName').value;
-        const productQuantities = {};
-        const productQuantityInputs = document.querySelectorAll('#productSelectionTableBody input[type="number"]');
-        
-        productQuantityInputs.forEach(input => {
-            const productName = input.getAttribute('data-product-name');
-            const quantity = parseInt(input.value);
-            if (quantity > 0) {
-                productQuantities[productName] = quantity;
-            }
-        });
+    const customerName = document.getElementById('customerName').value;
+    const productQuantities = {};
+    const productQuantityInputs = document.querySelectorAll('#productSelectionTableBody input[type="number"]');
 
-        if (Object.keys(productQuantities).length === 0) {
-            alert('Please select products and enter quantities.');
-            return;
+    productQuantityInputs.forEach(input => {
+        const productName = input.getAttribute('data-product-name');
+        const quantity = parseInt(input.value);
+        if (quantity > 0) {
+            productQuantities[productName] = quantity;
         }
+    });
 
-        const products = shelvingData.filter(p => Object.keys(productQuantities).includes(p.productName));
-        const sales = products.map(product => {
-            const quantity = productQuantities[product.productName];
-            const totalPrice = product.productPrice * quantity;
-            product.productQuantity -= quantity; // Update the quantity of the product in the shelvingData
-            return { customerName, productName: product.productName, sellQuantity: quantity, totalPrice };
-        });
-
-        sellingData.push(...sales);
-        salesData.push(...sales.map(sale => ({ ...sale, date: new Date().toISOString().split('T')[0] })));
-
-        saveData();
-
-        clearSellingFields();
-
-        const receipt = document.getElementById('receipt');
-        receipt.style.display = 'block';
-        receipt.innerHTML = `
-            <h3>Order Details</h3>
-            <div class="black-bar"></div>
-            <p class="receipt-header">COZ.PH</p>
-            <p>Customer Name: ${customerName}</p>
-            <ul>
-                ${products.map(product => `<li>${product.productName} x ${productQuantities[product.productName]}</li>`).join('')}
-            </ul>
-            <div class="black-bar"></div>
-            <p>Total Price: ₱${sales.reduce((acc, sale) => acc + sale.totalPrice, 0).toFixed(2)}</p>
-            <div class="black-bar"></div>
-            <p class="receipt-footer">Thank you for shopping at COZ.PH!</p>
-            <p style="text-align: center;">Phone: 056 711 9738</p>
-            <p style="text-align: center;">Email: cozph@gmail.com</p>
-        `;
-
-        updateShelvingTable(); // Update the Shelving tab after recording the sale
-        updateMonthlySalesChart(); // Update the chart after recording the sale
+    if (Object.keys(productQuantities).length === 0) {
+        alert('Please select products and enter quantities.');
+        return;
     }
 
-    function loadSalesData() {
-        const salesContainer = document.getElementById('dailySalesContainer');
-        salesContainer.innerHTML = '';
+    const products = shelvingData.filter(p => Object.keys(productQuantities).includes(p.productName));
+    const sales = products.map(product => {
+        const quantity = productQuantities[product.productName];
+        const totalPrice = product.productPrice * quantity;
+        product.productQuantity -= quantity; // Update the quantity of the product in the shelvingData
+        return { customerName, productName: product.productName, sellQuantity: quantity, totalPrice };
+    });
 
-        // Group sales data by date and calculate total earnings
-        const salesByDate = salesData.reduce((acc, sale) => {
-            const date = sale.date;
-            if (!acc[date]) {
-                acc[date] = { sales: [], total: 0 }; // Initialize total earnings
-            }
-            acc[date].sales.push(sale);
-            acc[date].total += sale.totalPrice; // Accumulate total earnings
-            return acc;
-        }, {});
+    sellingData.push(...sales);
+    salesData.push(...sales.map(sale => ({ ...sale, date: new Date().toISOString().split('T')[0] })));
 
-        // Create collapsible sections for each date
-        for (const date in salesByDate) {
-            const { sales, total } = salesByDate[date]; // Destructure the sales and total
-            const section = document.createElement('div');
-            section.classList.add('sales-section');
+    saveData();
+    clearSellingFields();
 
-            const header = document.createElement('div');
-            header.classList.add('sales-header');
-            header.innerText = `${date} - Total Earnings: ₱${total.toFixed(2)}`; // Display total earnings
+    const receipt = document.getElementById('receipt');
+    receipt.style.display = 'block';
+    receipt.innerHTML = `
+        <h3>Order Details</h3>
+        <div class="black-bar"></div>
+        <p class="receipt-header">COZ.PH</p>
+        <p>Customer Name: ${customerName}</p>
+        <ul>
+            ${products.map(product => `<li>${product.productName} x ${productQuantities[product.productName]}</li>`).join('')}
+        </ul>
+        <div class="black-bar"></div>
+        <p>Total Price: ₱${sales.reduce((acc, sale) => acc + sale.totalPrice, 0).toFixed(2)}</p>
+        <div class="black-bar"></div>
+        <p class="receipt-footer">Thank you for shopping at COZ.PH!</p>
+        <p style="text-align: center;">Phone: 056 711 9738</p>
+        <p style="text-align: center;">Email: cozph@gmail.com</p>
+    `;
 
-            // Create print button
-            const printButton = document.createElement('button');
-            printButton.innerText = 'Print';
-            printButton.onclick = () => printSales(date);
-            printButton.style.marginLeft = '10px'; // Add some space between the header and button
+    updateShelvingTable(); 
+    updateMonthlySalesChart(); 
+}
 
-            header.appendChild(printButton); // Append the print button to the header
-            header.onclick = () => toggleSalesDetails(section);
-            section.appendChild(header);
+function loadSalesData() {
+    const salesContainer = document.getElementById('dailySalesContainer');
+    salesContainer.innerHTML = '';
 
-            const details = document.createElement('div');
-            details.classList.add('sales-details');
-            details.style.display = 'none';
+    // Group sales data by date and calculate total earnings
+    const salesByDate = salesData.reduce((acc, sale) => {
+        const date = sale.date;
+        if (!acc[date]) {
+            acc[date] = { sales: [], total: 0 }; // Initialize total earnings
+        }
+        acc[date].sales.push(sale);
+        acc[date].total += sale.totalPrice; // Accumulate total earnings
+        return acc;
+    }, {});
 
-            const table = document.createElement('table');
-            table.innerHTML = `
-                <thead>
+    // Create collapsible sections for each date
+    for (const date in salesByDate) {
+        const { sales, total } = salesByDate[date]; // Destructure the sales and total
+        const section = document.createElement('div');
+        section.classList.add('sales-section');
+
+        const header = document.createElement('div');
+        header.classList.add('sales-header');
+        header.innerText = `${date} - Total Earnings: ₱${total.toFixed(2)}`; // Display total earnings
+
+        // Create print button
+        const printButton = document.createElement('button');
+        printButton.innerText = 'Print';
+        printButton.onclick = () => printSales(date);
+        printButton.style.marginLeft = '10px'; // Add some space between the header and button
+
+        header.appendChild(printButton); // Append the print button to the header
+        header.onclick = () => toggleSalesDetails(section);
+        section.appendChild(header);
+
+        const details = document.createElement('div');
+        details.classList.add('sales-details');
+        details.style.display = 'none';
+
+        const table = document.createElement('table');
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${sales.map((sale, index) => `
                     <tr>
-                        <th>Customer Name</th>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Total Price</th>
-                        <th>Action</th>
+                        <td>${sale.customerName}</td>
+                        <td>${sale.productName}</td>
+                        <td>${sale.sellQuantity}</td>
+                        <td>₱${(sale.totalPrice || 0).toFixed(2)}</td>
+                        <td><button onclick="archiveItem('sale', ${index})">Archive</button></td>
                     </tr>
-                </thead>
-                <tbody>
-                    ${sales.map((sale, index) => `
-                        <tr>
-                            <td>${sale.customerName}</td>
-                            <td>${sale.productName}</td>
-                            <td>${sale.sellQuantity}</td>
-                            <td>₱${(sale.totalPrice || 0).toFixed(2)}</td>
-                            <td><button onclick="archiveSale(${index})">Archive</button></td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            `;
-            details.appendChild(table);
-            section.appendChild(details);
-            salesContainer.appendChild(section);
-        }
+                `).join('')}
+            </tbody>
+        `;
+        details.appendChild(table);
+        section.appendChild(details);
+        salesContainer.appendChild(section);
     }
+    updateMonthlySalesChart(); 
+}
 
     function archiveSale(index) {
-        const saleToArchive = salesData.splice(index, 1)[0]; // Remove the sale from salesData
-        archivedData.push(saleToArchive); // Add it to archivedData
-        saveData(); // Save the updated data to local storage
-        loadSalesData(); // Reload the sales data to reflect the changes
-        updateArchiveTable(); // Update the archive table if necessary
-        alert("Sale archived successfully."); // Optional: Notify the user
+    console.log("Archiving sale at index:", index);
+    
+    // Remove the sale from salesData
+    const saleToArchive = salesData.splice(index, 1)[0]; 
+    console.log("Sale to archive:", saleToArchive);
+
+    // Check if sellQuantity exists
+    if (typeof saleToArchive.sellQuantity === "undefined") {
+        console.error("Sell quantity is undefined for the sale:", saleToArchive);
+        alert("Error: Sell quantity is undefined.");
+        return; // Exit the function if sellQuantity is undefined
     }
+
+    // Create a new archived item with type "Sale" and use the actual sellQuantity
+    const archivedItem = {
+        type: "Sale", // Set the type to "Sale"
+        productName: saleToArchive.productName, // Use the product name from the sale
+        quantity: saleToArchive.sellQuantity, // Use the actual sellQuantity from the sale
+        date: saleToArchive.date || new Date().toISOString().split('T')[0] // Use the date from the sale or set to today
+    };
+
+    // Add the new archived item to archivedData
+    archivedData.push(archivedItem); 
+    saveData(); // Save the updated data to local storage
+    loadSalesData(); // Reload the sales data to reflect the changes
+    updateArchiveTable(); // Update the archive table if necessary
+    updateMonthlySalesChart();
+    alert("Sale archived successfully."); // Notify the user
+}
+
+function toggleArchive() {
+    const modal = document.getElementById('archiveModal');
+    modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; // Toggle the display style
+    updateArchiveTable(); // Update the archive table whenever the modal is opened
+    console.log("Archive modal toggled. Current display:", modal.style.display);
+}
+
+function toggleArchive() {
+    const modal = document.getElementById('archiveModal');
+    modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; // Toggle the display style
+    updateArchiveTable(); // Update the archive table whenever the modal is opened
+    console.log("Archive modal toggled. Current display:", modal.style.display);
+}
+
+function toggleArchive() {
+    const modal = document.getElementById('archiveModal');
+    modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; // Toggle the display style
+    updateArchiveTable(); // Update the archive table whenever the modal is opened
+    console.log("Archive modal toggled. Current display:", modal.style.display);
+}
 
             // Update restocking table
     function updateRestockingTable() {
@@ -904,23 +960,35 @@
         // Archive item
         function archiveItem(type, index) {
     let item;
+    let confirmArchive;
+
     if (type === 'restocking') {
-        const confirmArchive = confirm(`Are you sure you want to archive ${restockingData[index].yarnName}?`);
+        confirmArchive = confirm(`Are you sure you want to archive ${restockingData[index].yarnName}?`);
         if (confirmArchive) {
             item = restockingData.splice(index, 1)[0];
             archivedData.push({ type, ...item });
             updateRestockingTable();
             updateArchiveTable();
-            saveData(); // Make sure to save data here
+            saveData();
         }
     } else if (type === 'shelving') {
-        const confirmArchive = confirm(`Are you sure you want to archive ${shelvingData[index].productName}?`);
+        confirmArchive = confirm(`Are you sure you want to archive ${shelvingData[index].productName}?`);
         if (confirmArchive) {
             item = shelvingData.splice(index, 1)[0];
             archivedData.push({ type, ...item });
             updateShelvingTable();
             updateArchiveTable();
-            saveData(); // Make sure to save data here
+            saveData();
+        }
+    } else if (type === 'sale') {
+        confirmArchive = confirm(`Are you sure you want to archive the sale of ${salesData[index].productName}?`);
+        if (confirmArchive) {
+            const saleToArchive = salesData.splice(index, 1)[0];
+            archivedData.push({ type: "Sale", ...saleToArchive });
+            saveData();
+            loadSalesData(); // Reload sales data to reflect changes
+            updateMonthlySalesChart(); // Update the chart immediately after archiving the sale
+            alert("Sale archived successfully."); // Notify the user
         }
     }
 }
@@ -929,14 +997,16 @@
     const table = document.getElementById('archiveTable').querySelector('tbody');
     table.innerHTML = ''; // Clear the current table
     archivedData.forEach(item => {
-        table.innerHTML += `
-            <tr>
-                <td>${item.type}</td>
-                <td>${item.yarnName || item.productName}</td>
-                <td>${item.quantity || item.productQuantity}</td>
-                <td>${item.date || ''}</td>
-            </tr>
-        `;
+        const row = table.insertRow(0); // Insert a new row at the top (index 0)
+        const cellType = row.insertCell(0);
+        const cellName = row.insertCell(1);
+        const cellQuantity = row.insertCell(2);
+        const cellDate = row.insertCell(3);
+
+        cellType.innerText = item.type;
+        cellName.innerText = item.yarnName || item.productName;
+        cellQuantity.innerText = item.quantity || item.productQuantity;
+        cellDate.innerText = item.date || '';
     });
 }
 
@@ -1153,6 +1223,11 @@ window.onload = function() {
     updateMonthlySalesChart(); // Call this function as well
 }
 
+function setTodayDate() {
+    const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+    document.getElementById('date').value = today; // Set the value of the date input
+}
+
 function addRestocking() {
     const yarnName = document.getElementById('yarnName').value;
     const quantity = parseInt(document.getElementById('quantity').value);
@@ -1210,74 +1285,74 @@ function addRestocking() {
     });
     }
     function loadMonthlySalesData() {
-        const monthlySalesContainer = document.getElementById('monthlySalesContainer');
-        monthlySalesContainer.innerHTML = '';
+    const monthlySalesContainer = document.getElementById('monthlySalesContainer');
+    monthlySalesContainer.innerHTML = ''; // Clear previous data
 
-        // Group sales data by month and calculate total earnings
-        const salesByMonth = salesData.reduce((acc, sale) => {
-            const saleDate = new Date(sale.date);
-            const month = saleDate.getMonth();
-            const year = saleDate.getFullYear();
-            const monthYearKey = `${year}-${month + 1}`; // Create a unique key for each month
+    // Group sales data by month and calculate total earnings
+    const salesByMonth = salesData.reduce((acc, sale) => {
+        const saleDate = new Date(sale.date);
+        const month = saleDate.getMonth();
+        const year = saleDate.getFullYear();
+        const monthYearKey = `${year}-${month + 1}`; // Create a unique key for each month
 
-            if (!acc[monthYearKey]) {
-                acc[monthYearKey] = { sales: [], total: 0 };
-            }
-            acc[monthYearKey].sales.push(sale);
-            acc[monthYearKey].total += sale.totalPrice; // Accumulate total earnings
-            return acc;
-        }, {});
-
-        // Create sections for each month
-        for (const key in salesByMonth) {
-            const { sales, total } = salesByMonth[key];
-            const section = document.createElement('div');
-            section.classList.add('sales-section');
-
-            const header = document.createElement('div');
-            header.classList.add('sales-header');
-            header.innerText = `${key} - Total Earnings: ₱${total.toFixed(2)}`;
-
-            // Create print button
-            const printButton = document.createElement('button');
-            printButton.innerText = 'Print';
-            printButton.onclick = () => printMonthlySales(key);
-            printButton.style.marginLeft = '10px'; // Add some space between the header and button
-
-            header.appendChild(printButton); // Append the print button to the header
-            header.onclick = () => toggleSalesDetails(section);
-            section.appendChild(header);
-
-            const details = document.createElement('div');
-            details.classList.add('sales-details');
-            details.style.display = 'none';
-
-            const table = document.createElement('table');
-            table.innerHTML = `
-                <thead>
-                    <tr>
-                        <th>Customer Name</th>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Total Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${sales.map(sale => `
-                        <tr>
-                            <td>${sale.customerName}</td>
-                            <td>${sale.productName}</td>
-                            <td>${sale.sellQuantity}</td>
-                            <td>₱${(sale.totalPrice || 0).toFixed(2)}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            `;
-            details.appendChild(table);
-            section.appendChild(details);
-            monthlySalesContainer.appendChild(section);
+        if (!acc[monthYearKey]) {
+            acc[monthYearKey] = { sales: [], total: 0 };
         }
+        acc[monthYearKey].sales.push(sale);
+        acc[monthYearKey].total += sale.totalPrice; // Accumulate total earnings
+        return acc;
+    }, {});
+
+    // Create sections for each month
+    for (const key in salesByMonth) {
+        const { sales, total } = salesByMonth[key];
+        const section = document.createElement('div');
+        section.classList.add('sales-section');
+
+        const header = document.createElement('div');
+        header.classList.add('sales-header');
+        header.innerText = `${key} - Total Earnings: ₱${total.toFixed(2)}`;
+
+        // Create print button
+        const printButton = document.createElement('button');
+        printButton.innerText = 'Print';
+        printButton.onclick = () => printMonthlySales(key);
+        printButton.style.marginLeft = '10px'; // Add some space between the header and button
+
+        header.appendChild(printButton); // Append the print button to the header
+        header.onclick = () => toggleSalesDetails(section);
+        section.appendChild(header);
+
+        const details = document.createElement('div');
+        details.classList.add('sales-details');
+        details.style.display = 'none';
+
+        const table = document.createElement('table');
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${sales.map(sale => `
+                    <tr>
+                        <td>${sale.customerName}</td>
+                        <td>${sale.productName}</td>
+                        <td>${sale.sellQuantity}</td>
+                        <td>₱${(sale.totalPrice || 0).toFixed(2)}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        `;
+        details.appendChild(table);
+        section.appendChild(details);
+        monthlySalesContainer.appendChild(section);
     }
+}
 
     function toggleSalesDetails(section) {
         const details = section.querySelector('.sales-details');
@@ -1289,11 +1364,7 @@ function addRestocking() {
         loadMonthlySalesData();
         showTab('monthlySales'); // Ensure the Monthly Sales tab is shown
     }
-    function toggleArchive() {
-    const modal = document.getElementById('archiveModal');
-    modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; // Toggle the display style
-    updateArchiveTable(); // Update the archive table whenever the modal is opened
-}
+    
 // Function to save data to local storage
 function saveData() {
     localStorage.setItem('restockingData', JSON.stringify(restockingData));
@@ -1314,6 +1385,15 @@ function filterProducts() {
             const productName = productNameCell.textContent || productNameCell.innerText;
             rows[i].style.display = productName.toLowerCase().includes(searchInput) ? '' : 'none';
         }
+    }
+}
+function clearArchivedItems() {
+    const confirmClear = confirm("Are you sure you want to clear all archived items?");
+    if (confirmClear) {
+        archivedData = []; // Clear the archived data array
+        saveData(); // Save the changes to local storage
+        updateArchiveTable(); // Update the archive table to reflect the changes
+        alert("All archived items have been cleared."); // Notify the user
     }
 }
         </script>
