@@ -304,6 +304,26 @@
             .quantity-button:hover {
                 background-color: #ff8e8e;
             }
+            .search-container {
+    display: flex; /* Use flexbox to align items horizontally */
+    margin-bottom: 20px; /* Space below the search container */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column; /* Stack label and input vertically */
+    margin-right: 5px; /* Reduced space between form groups */
+}
+
+.form-group label {
+    font-size: 0.9rem; /* Smaller font size for labels */
+}
+
+.search-input {
+    width: 60px; /* Set a fixed width for search input fields */
+    padding: 3px; /* Smaller padding for input fields */
+    font-size: 0.9rem; /* Smaller font size for input fields */
+}
         </style>
     </head>
     <body>
@@ -422,10 +442,25 @@
             </div>
 
             <!-- Daily Sales Tab Content -->
-    <div id="dailySales" class="tab-content">
-        <h2>Daily Sales</h2>
-        <div id="dailySalesContainer"></div>
+<div id="dailySales" class="tab-content">
+    <h2>Daily Sales</h2>
+    <div class="search-container">
+        <div class="form-group">
+            <label for="searchYear">Year:</label>
+            <input type="number" class="search-input" id="searchYear" placeholder="YYYY" oninput="filterDailySales()" />
+        </div>
+        <div class="form-group">
+            <label for="searchMonth">Month:</label>
+            <input type="number" class="search-input" id="searchMonth" placeholder="1-12" min="1" max="12" oninput="filterDailySales()" />
+        </div>
+        <div class="form-group">
+            <label for="searchDay">Day:</label>
+            <input type="number" class="search-input" id="searchDay" placeholder="1-31" min="1" max="31" oninput="filterDailySales()" />
+        </div>
     </div>
+    <div id="dailySalesContainer"></div>
+</div>
+
 
             <!-- Monthly Sales Tab Content -->
     <div id="monthlySales" class="tab-content">
@@ -739,6 +774,91 @@
         }
     }
 
+    function filterDailySales() {
+    const year = document.getElementById('searchYear').value;
+    const month = document.getElementById('searchMonth').value;
+    const day = document.getElementById('searchDay').value;
+
+    const salesContainer = document.getElementById('dailySalesContainer');
+    salesContainer.innerHTML = '';
+
+    // Filter sales data based on the search criteria
+    const filteredSales = salesData.filter(sale => {
+        const saleDate = new Date(sale.date);
+        const saleYear = saleDate.getFullYear();
+        const saleMonth = saleDate.getMonth() + 1; // Months are 0-indexed
+        const saleDay = saleDate.getDate();
+
+        const matchesYear = year ? saleYear === parseInt(year) : true;
+        const matchesMonth = month ? saleMonth === parseInt(month) : true;
+        const matchesDay = day ? saleDay === parseInt(day) : true;
+
+        return matchesYear && matchesMonth && matchesDay;
+    });
+
+    // Group filtered sales data by date and calculate total earnings
+    const salesByDate = filteredSales.reduce((acc, sale) => {
+        const date = sale.date;
+        if (!acc[date]) {
+            acc[date] = { sales: [], total: 0 }; // Initialize total earnings
+        }
+        acc[date].sales.push(sale);
+        acc[date].total += sale.totalPrice; // Accumulate total earnings
+        return acc;
+    }, {});
+
+    // Create collapsible sections for each date
+    for (const date in salesByDate) {
+        const { sales, total } = salesByDate[date]; // Destructure the sales and total
+        const section = document.createElement('div');
+        section.classList.add('sales-section');
+
+        const header = document.createElement('div');
+        header.classList.add('sales-header');
+        header.innerText = `${date} - Total Earnings: ₱${total.toFixed(2)}`; // Display total earnings
+
+        // Create print button
+        const printButton = document.createElement('button');
+        printButton.innerText = 'Print';
+        printButton.onclick = () => printSales(date);
+        printButton.style.marginLeft = '10px'; // Add some space between the header and button
+
+        header.appendChild(printButton); // Append the print button to the header
+        header.onclick = () => toggleSalesDetails(section);
+        section.appendChild(header);
+
+        const details = document.createElement('div');
+        details.classList.add('sales-details');
+        details.style.display = 'none';
+
+        const table = document.createElement('table');
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${sales.map((sale, index) => `
+                    <tr>
+                        <td>${sale.customerName}</td>
+                        <td>${sale.productName}</td>
+                        <td>${sale.sellQuantity}</td>
+                        <td>₱${(sale.totalPrice || 0).toFixed(2)}</td>
+                        <td><button onclick="archiveSale(${index})">Archive</button></td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        `;
+        details.appendChild(table);
+        section.appendChild(details);
+        salesContainer.appendChild(section);
+    }
+}
 
             // Update shelving table
     function updateShelvingTable() {
