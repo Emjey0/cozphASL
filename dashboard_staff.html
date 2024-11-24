@@ -332,95 +332,74 @@
         </div>
 
         <!-- Restocking Tab Content -->
-        <div id="restocking" class="tab-content active">
-            <h2>Restocking Yarn</h2>
-            <div class="form-group">
-                <label for="yarnName">Yarn Name:</label>
-                <input type="text" id="yarnName" placeholder="Enter yarn name ">
-            </div>
-            <div class="form-group">
-                <label for="quantity">Quantity:</label>
-                <input type="number" id="quantity" placeholder="Enter quantity">
-            </div>
-            <div class="form-group">
-                <label for="date">Date:</label>
-                <input type="date" id="date" readonly />
-            </div>
-            <div class="form-group">
-                <button onclick="addRestocking()">Add Restocking</button>
-            </div>
-            <div class="form-group">
-                <label for="restockingSearch">Search Yarn Name:</label>
-                <input type="text" id="restockingSearch" onkeyup="filterRestocking()" placeholder="Search for yarn name...">
-            </div>
-            <table id="restockingTable">
-                <thead>
-                    <tr>
-                        <th>Yarn Name</th>
-                        <th>Quantity</th>
-                        <th>Date Updated</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-
-        <!-- Shelving Tab Content -->
-        <div id="shelving" class="tab-content">
-            <h2>Shelving Products</h2>
-            <div class="form-group">
-            </div>
-            <div class="form-group">
-                <label for="shelvingSearch">Search Products:</label>
-                <input type="text" id="shelvingSearch" onkeyup="filterShelving()" placeholder="Search for products...">
-            </div>
-            <table id="shelvingTable">
-                <thead>
-                    <tr>
-                        <th>Product Name</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-
-        <!-- Selling Tab Content -->
-<div id="selling" class="tab-content">
-    <h2>Selling Products</h2>
+<div id="restocking" class="tab-content active">
+    <h2>Restocking Yarn</h2>
     <div class="form-group">
-        <label for="customerName">Customer Name:</label>
-        <input type="text" id="customerName" placeholder="Enter customer name">
+        <label for="yarnName">Yarn Name:</label>
+        <input type="text" id="yarnName" placeholder="Enter yarn name ">
     </div>
-
-    <!-- Search Input for Products -->
     <div class="form-group">
-        <label for="productSearch">Search Products:</label>
-        <input type="text" id="productSearch" onkeyup="filterProducts()" placeholder="Search for products...">
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" placeholder="Enter quantity">
     </div>
-
-    <!-- Scrollable Container for Product Selection -->
-    <div class="scrollable-container">
-        <table id="productSelectionTable">
-            <thead>
-                <tr>
-                    <th>Product Name</th>
-                    <th>Quantity</th>
-                </tr>
-            </thead>
-            <tbody id="productSelectionTableBody"></tbody>
-        </table>
-    </div>
-
     <div class="form-group">
-        <button onclick="recordSale()">Record Sale</button>
+        <label for="date">Date:</label>
+        <input type="date" id="date" readonly />
     </div>
-    <div id="receipt"></div>
+    <div class="form-group">
+        <button onclick="addRestocking()">Add Restocking</button>
+    </div>
+    <div class="form-group">
+        <label for="restockingSearch">Search Yarn Name:</label>
+        <input type="text" id="restockingSearch" onkeyup="filterRestocking()" placeholder="Search for yarn name...">
+    </div>
+    <table id="restockingTable">
+        <thead>
+            <tr>
+                <th>Yarn Name</th>
+                <th>Quantity</th>
+                <th>Date Updated</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 </div>
-        <!-- Daily Sales Tab Content -->
+
+<!-- Shelving Tab Content -->
+<div id="shelving" class="tab-content">
+    <h2>Shelving Products</h2>
+    <div class="form-group">
+        <label for="productName">Product Name:</label>
+        <input type="text" id="productName" placeholder="Enter product name">
+    </div>
+    <div class="form-group">
+        <label for="productPrice">Price:</label>
+        <input type="number" id="productPrice" placeholder="Enter product price">
+    </div>
+    <div class="form-group">
+        <label for="productQuantity">Quantity:</label>
+        <input type="number" id="productQuantity" placeholder="Enter product quantity">
+    </div>
+    <div class="form-group">
+        <button onclick="addShelving()">Add Product</button>
+    </div>
+    <div class="form-group">
+        <label for="shelvingSearch">Search Products:</label>
+        <input type="text" id="shelvingSearch" onkeyup="filterShelving()" placeholder="Search for products...">
+    </div>
+    <table id="shelvingTable">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- Daily Sales Tab Content -->
 <div id="dailySales" class="tab-content">
     <h2>Daily Sales</h2>
     <div class="search-container">
