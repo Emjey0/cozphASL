@@ -324,6 +324,14 @@
     padding: 3px; /* Smaller padding for input fields */
     font-size: 0.9rem; /* Smaller font size for input fields */
 }
+.scrollable-container {
+    max-height: 300px; /* Set the maximum height for the scrollable area */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Hide horizontal scrolling */
+    border: 1px solid #ddd; /* Optional: Add a border for better visibility */
+    border-radius: 5px; /* Optional: Rounded corners */
+    margin-bottom: 20px; /* Space below the scrollable container */
+}
         </style>
     </head>
     <body>
@@ -419,27 +427,38 @@
                 </table>
             </div>
 
-            <!-- Selling Tab Content -->
-            <div id="selling" class="tab-content">
-                <h2>Selling Products</h2>
-                <div class="form-group">
-                    <label for="customerName">Customer Name:</label>
-                    <input type="text" id="customerName" placeholder="Enter customer name">
-                </div>
-                <table id="productSelectionTable">
-                    <thead>
-                        <tr>
-                            <th>Product Name</th>
-                            <th>Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody id="productSelectionTableBody"></tbody>
-                </table>
-                <div class="form-group">
-                    <button onclick="recordSale()">Record Sale</button>
-                </div>
-                <div id="receipt"></div>
-            </div>
+           <!-- Selling Tab Content -->
+<div id="selling" class="tab-content">
+    <h2>Selling Products</h2>
+    <div class="form-group">
+        <label for="customerName">Customer Name:</label>
+        <input type="text" id="customerName" placeholder="Enter customer name">
+    </div>
+
+    <!-- Search Input for Products -->
+    <div class="form-group">
+        <label for="productSearch">Search Products:</label>
+        <input type="text" id="productSearch" onkeyup="filterProducts()" placeholder="Search for products...">
+    </div>
+
+    <!-- Scrollable Container for Product Selection -->
+    <div class="scrollable-container">
+        <table id="productSelectionTable">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody id="productSelectionTableBody"></tbody>
+        </table>
+    </div>
+
+    <div class="form-group">
+        <button onclick="recordSale()">Record Sale</button>
+    </div>
+    <div id="receipt"></div>
+</div>
 
             <!-- Daily Sales Tab Content -->
 <div id="dailySales" class="tab-content">
@@ -1282,6 +1301,20 @@ function saveData() {
     localStorage.setItem('sellingData', JSON.stringify(sellingData));
     localStorage.setItem('archivedData', JSON.stringify(archivedData)); // Save archived data
     localStorage.setItem('salesData', JSON.stringify(salesData));
+}
+function filterProducts() {
+    const searchInput = document.getElementById('productSearch').value.toLowerCase();
+    const tableBody = document.getElementById('productSelectionTableBody');
+    const rows = tableBody.getElementsByTagName('tr');
+
+    // Loop through all table rows and hide those that don't match the search query
+    for (let i = 0; i < rows.length; i++) {
+        const productNameCell = rows[i].getElementsByTagName('td')[0]; // Get the product name cell
+        if (productNameCell) {
+            const productName = productNameCell.textContent || productNameCell.innerText;
+            rows[i].style.display = productName.toLowerCase().includes(searchInput) ? '' : 'none';
+        }
+    }
 }
         </script>
     </body>
